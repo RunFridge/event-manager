@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package event;
+
+service EventService {
+}
+
+message Event {
+  string id = 1;
+  string title = 2;
+}
+
+message EventList {
+  repeated Event events = 1;
+}
+
+message Reward {
+  string id = 1;
+}

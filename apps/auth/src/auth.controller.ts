@@ -1,19 +1,19 @@
-import { Controller } from '@nestjs/common';
+import { Controller } from "@nestjs/common";
 import {
   AuthServiceController,
   AuthServiceControllerMethods,
   LoginRequest,
   LoginResponse,
-} from 'proto/auth';
+} from "proto/auth";
 
-@Controller('auth')
+@Controller("auth")
 @AuthServiceControllerMethods()
 export class AuthController implements AuthServiceController {
   async login(request: LoginRequest): Promise<LoginResponse> {
     return await new Promise<LoginResponse>((resolve) => {
       resolve({
         token: request.username,
-        message: 'Login successful',
+        message: "Login successful",
       });
     });
   }

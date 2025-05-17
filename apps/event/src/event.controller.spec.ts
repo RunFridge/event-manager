@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { EventController } from './event.controller';
-import { EventService } from './event.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { EventController } from "./event.controller";
+import { EventService } from "./event.service";
 
-describe('EventController', () => {
+describe("EventController", () => {
   let eventController: EventController;
 
   beforeEach(async () => {
@@ -14,9 +14,9 @@ describe('EventController', () => {
     eventController = app.get<EventController>(EventController);
   });
 
-  describe('root', () => {
+  describe("root", () => {
     it('should return "Hello World!"', () => {
-      expect(eventController.getHello()).toBe('Hello World!');
+      expect(eventController.getHello()).toBe("Hello World!");
     });
   });
 });

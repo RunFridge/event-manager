@@ -3,26 +3,26 @@ import {
   AuthServiceController,
   AuthServiceControllerMethods,
   LoginRequest,
-  LoginResponse,
+  TokenResponse,
 } from "proto/auth";
 
 @Controller("auth")
 @AuthServiceControllerMethods()
 export class AuthController implements AuthServiceController {
-  async login(request: LoginRequest): Promise<LoginResponse> {
-    return await new Promise<LoginResponse>((resolve) => {
-      resolve({
-        token: request.username,
-        message: "Login successful",
-      });
-    });
-  }
+  private readonly instanceId = Math.random().toString(36).substring(2, 15);
 
-  async logout(request: LogoutRequest): Promise<LogoutResponse> {
-    return await new Promise<LogoutResponse>((resolve) => {
-      resolve({
-        message: `Logout successful: ${request.token}`,
-      });
-    });
+  login(request: LoginRequest): TokenResponse {
+    console.log(
+      `[${this.instanceId}] username: ${request.username}, password: ${request.password}`,
+    );
+    const accessToken = request.username + "@AT";
+    const refreshToken = "RT@" + Date.now();
+    return {
+      accessToken,
+      refreshToken,
+      refreshTokenExpiresIn: 100,
+      accessTokenExpiresIn: 100,
+      tokenType: "Bearer",
+    };
   }
 }

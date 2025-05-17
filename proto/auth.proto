@@ -2,98 +2,19 @@ syntax = "proto3";
 
 package auth;
 
-// Auth service definition
 service AuthService {
-  // User registration
-  rpc Register(RegisterRequest) returns (RegisterResponse) {}
-
-  // User login
-  rpc Login(LoginRequest) returns (LoginResponse) {}
-
-  // Token validation
-  rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse) {}
-
-  // Role management
-  rpc AssignRole(AssignRoleRequest) returns (AssignRoleResponse) {}
-  rpc RemoveRole(RemoveRoleRequest) returns (RemoveRoleResponse) {}
-  rpc GetUserRoles(GetUserRolesRequest) returns (GetUserRolesResponse) {}
+    rpc Login (LoginRequest) returns (TokenResponse);
 }
 
-// Registration related messages
-message RegisterRequest {
-  string email = 1;
-  string password = 2;
-  string username = 3;
-}
-
-message RegisterResponse {
-  bool success = 1;
-  string message = 2;
-  UserData user = 3;
-}
-
-// Login related messages
 message LoginRequest {
-  string email = 1;
-  string password = 2;
+    string username = 1;
+    string password = 2;
 }
 
-message LoginResponse {
-  bool success = 1;
-  string message = 2;
-  string access_token = 3;
-  string refresh_token = 4;
-  UserData user = 5;
-}
-
-// Token validation related messages
-message ValidateTokenRequest {
-  string token = 1;
-}
-
-message ValidateTokenResponse {
-  bool valid = 1;
-  UserData user = 2;
-  repeated string roles = 3;
-}
-
-// Role management related messages
-message AssignRoleRequest {
-  string user_id = 1;
-  string role = 2;
-}
-
-message AssignRoleResponse {
-  bool success = 1;
-  string message = 2;
-  repeated string roles = 3;
-}
-
-message RemoveRoleRequest {
-  string user_id = 1;
-  string role = 2;
-}
-
-message RemoveRoleResponse {
-  bool success = 1;
-  string message = 2;
-  repeated string roles = 3;
-}
-
-message GetUserRolesRequest {
-  string user_id = 1;
-}
-
-message GetUserRolesResponse {
-  repeated string roles = 1;
-}
-
-// Common data structures
-message UserData {
-  string id = 1;
-  string email = 2;
-  string username = 3;
-  repeated string roles = 4;
-  string created_at = 5;
-  string updated_at = 6;
+message TokenResponse {
+    string access_token = 1;
+    string refresh_token = 2;
+    int32 access_token_expires_in = 3;
+    int32 refresh_token_expires_in = 4;
+    string token_Type = 5;
 }

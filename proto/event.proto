@@ -3,17 +3,14 @@ syntax = "proto3";
 package event;
 
 service EventService {
+    rpc FindOne (FindOneRequest) returns (Event);
+}
+
+message FindOneRequest {
+    string event_id = 1;
 }
 
 message Event {
-  string id = 1;
-  string title = 2;
-}
-
-message EventList {
-  repeated Event events = 1;
-}
-
-message Reward {
-  string id = 1;
+    string title = 1;
+    string type = 2;
 }

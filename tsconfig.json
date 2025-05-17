@@ -19,7 +19,9 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@constants/*": ["./constants/*"]
+      "@config/*": ["./configuration/*"],
+      "@constants/*": ["./constants/*"],
+      "@utils/*": ["./utils/*"]
     }
   }
 }

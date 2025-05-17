@@ -11,7 +11,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "format": "prettier --write \"apps/**/*.ts\" \"constants/**/*.ts\" \"database/**/*.ts\"",
+    "format": "prettier --write \"apps/**/*.ts\" \"constants/**/*.ts\" \"database/**/*.ts\" \"configuration/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -22,17 +22,20 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./apps/gateway/test/jest-e2e.json",
-    "proto:gen": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_opt=nestJs=true --ts_proto_out=. ./proto/*.proto",
-    "proto:gen-win": "protoc --plugin=\".\\node_modules\\.bin\\protoc-gen-ts_proto.cmd\" --ts_proto_opt=nestJs=true --ts_proto_out=. ./proto/*.proto"
+    "proto:gen": "ts-node ./proto/protogen.ts"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.13.3",
     "@grpc/proto-loader": "^0.7.15",
+    "@grpc/reflection": "^1.0.4",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
     "@nestjs/microservices": "^11.1.1",
     "@nestjs/platform-express": "^11.0.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
+    "grpc-health-check": "^2.0.2",
     "joi": "^17.13.3",
     "mongoose": "^8.14.3",
     "reflect-metadata": "^0.2.2",

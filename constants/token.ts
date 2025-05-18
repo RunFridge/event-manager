@@ -1,0 +1,3 @@
+const SECOND = 1_000;
+export const ACCESS_TOKEN_EXPIRES_IN = 60 * SECOND;
+export const REFRESH_TOKEN_EXPIRES_IN = 3600 * SECOND;

@@ -8,12 +8,20 @@
 import { Metadata } from "@grpc/grpc-js";
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
+import { Timestamp } from "../google/protobuf/timestamp";
 
 export const protobufPackage = "auth";
 
-export interface LoginRequest {
+export interface AuthRequest {
   username: string;
   password: string;
+}
+
+export interface CommonResponse {
+  result: boolean;
+  message?: string | undefined;
+  tokenResponse?: TokenResponse | undefined;
+  registerResponse?: RegisterResponse | undefined;
 }
 
 export interface TokenResponse {
@@ -21,22 +29,39 @@ export interface TokenResponse {
   refreshToken: string;
   accessTokenExpiresIn: number;
   refreshTokenExpiresIn: number;
-  tokenType: string;
+}
+
+export interface RegisterResponse {
+  username: string;
+  role: string;
+  active: boolean;
+  createdAt: Timestamp | undefined;
+  updatedAt: Timestamp | undefined;
 }
 
 export const AUTH_PACKAGE_NAME = "auth";
 
 export interface AuthServiceClient {
-  login(request: LoginRequest, metadata?: Metadata): Observable<TokenResponse>;
+  register(request: AuthRequest, metadata?: Metadata): Observable<CommonResponse>;
+
+  login(request: AuthRequest, metadata?: Metadata): Observable<CommonResponse>;
 }
 
 export interface AuthServiceController {
-  login(request: LoginRequest, metadata?: Metadata): Promise<TokenResponse> | Observable<TokenResponse> | TokenResponse;
+  register(
+    request: AuthRequest,
+    metadata?: Metadata,
+  ): Promise<CommonResponse> | Observable<CommonResponse> | CommonResponse;
+
+  login(
+    request: AuthRequest,
+    metadata?: Metadata,
+  ): Promise<CommonResponse> | Observable<CommonResponse> | CommonResponse;
 }
 
 export function AuthServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["login"];
+    const grpcMethods: string[] = ["register", "login"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("AuthService", method)(constructor.prototype[method], method, descriptor);

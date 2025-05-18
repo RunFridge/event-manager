@@ -1,14 +1,26 @@
 syntax = "proto3";
 
+import "google/protobuf/timestamp.proto";
+
 package auth;
 
 service AuthService {
-    rpc Login (LoginRequest) returns (TokenResponse);
+    rpc Register (AuthRequest) returns (CommonResponse);
+    rpc Login (AuthRequest) returns (CommonResponse);
 }
 
-message LoginRequest {
+message AuthRequest {
     string username = 1;
     string password = 2;
+}
+
+message CommonResponse {
+    bool result = 1;
+    optional string message = 2;
+    oneof data {
+        TokenResponse token_response = 3;
+        RegisterResponse register_response = 4;
+    }
 }
 
 message TokenResponse {
@@ -16,5 +28,12 @@ message TokenResponse {
     string refresh_token = 2;
     int32 access_token_expires_in = 3;
     int32 refresh_token_expires_in = 4;
-    string token_Type = 5;
+}
+
+message RegisterResponse {
+    string username = 1;
+    string role = 2;
+    bool active = 3;
+    google.protobuf.Timestamp created_at = 4;
+    google.protobuf.Timestamp updated_at = 5;
 }

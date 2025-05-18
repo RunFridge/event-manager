@@ -8,37 +8,50 @@ import {
   EVENT_SERVICE_NAME,
   protobufPackage as eventPackage,
 } from "proto/event";
-import {
-  AUTH_DEFAULT_PORT,
-  DEFAULT_HOST,
-  EVENT_DEFAULT_PORT,
-} from "@constants/index";
+import { DEFAULT_HOST } from "@constants/index";
+import { ConfigService } from "@nestjs/config";
+import { JwtStrategy } from "./auth/jwt.strategy";
 
 @Module({
   imports: [
     ConfigurationModule,
-    ClientsModule.register([
-      {
-        name: AUTH_SERVICE_NAME,
-        transport: Transport.GRPC,
-        options: {
-          package: authPackage,
-          protoPath: "proto/auth.proto",
-          url: `${DEFAULT_HOST}:${AUTH_DEFAULT_PORT}`,
+    ClientsModule.registerAsync({
+      isGlobal: true,
+      clients: [
+        {
+          name: AUTH_SERVICE_NAME,
+          inject: [ConfigService],
+          useFactory: (config: ConfigService) => {
+            const authPort = config.get<number>("AUTH_PORT");
+            return {
+              transport: Transport.GRPC,
+              options: {
+                package: authPackage,
+                protoPath: "proto/auth.proto",
+                url: `${DEFAULT_HOST}:${authPort}`,
+              },
+            };
+          },
         },
-      },
-      {
-        name: EVENT_SERVICE_NAME,
-        transport: Transport.GRPC,
-        options: {
-          package: eventPackage,
-          protoPath: "proto/event.proto",
-          url: `${DEFAULT_HOST}:${EVENT_DEFAULT_PORT}`,
+        {
+          name: EVENT_SERVICE_NAME,
+          inject: [ConfigService],
+          useFactory: (config: ConfigService) => {
+            const eventPort = config.get<number>("EVENT_PORT");
+            return {
+              transport: Transport.GRPC,
+              options: {
+                package: eventPackage,
+                protoPath: "proto/event.proto",
+                url: `${DEFAULT_HOST}:${eventPort}`,
+              },
+            };
+          },
         },
-      },
-    ]),
+      ],
+    }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, JwtStrategy],
 })
 export class AppModule {}

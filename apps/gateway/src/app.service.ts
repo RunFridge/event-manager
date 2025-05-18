@@ -3,9 +3,9 @@ import { ClientGrpc } from "@nestjs/microservices";
 import { catchError, Observable, throwError } from "rxjs";
 import {
   AUTH_SERVICE_NAME,
+  AuthRequest,
   AuthServiceClient,
-  LoginRequest,
-  TokenResponse,
+  CommonResponse,
 } from "proto/auth";
 import {
   Event,
@@ -13,6 +13,15 @@ import {
   EventServiceClient,
   FindOneRequest,
 } from "proto/event";
+import { AliveResponseDto } from "./dtos/AliveResponse.dto";
+import { isServerAlive } from "@utils/network";
+import {
+  AUTH_DEFAULT_PORT,
+  DEFAULT_HOST,
+  EVENT_DEFAULT_PORT,
+} from "@constants/index";
+import { ConfigService } from "@nestjs/config";
+import { AUTH_PORT, EVENT_PORT } from "@config/env.schema";
 
 @Injectable()
 export class AppService implements OnModuleInit {
@@ -22,6 +31,7 @@ export class AppService implements OnModuleInit {
   constructor(
     @Inject(AUTH_SERVICE_NAME) private authClient: ClientGrpc,
     @Inject(EVENT_SERVICE_NAME) private eventClient: ClientGrpc,
+    private config: ConfigService,
   ) {}
 
   onModuleInit() {
@@ -31,7 +41,28 @@ export class AppService implements OnModuleInit {
       this.eventClient.getService<EventServiceClient>(EVENT_SERVICE_NAME);
   }
 
-  login(request: LoginRequest): Observable<TokenResponse> {
+  async alive(): Promise<AliveResponseDto> {
+    const authServer = await isServerAlive(
+      DEFAULT_HOST,
+      this.config.get(AUTH_PORT) || AUTH_DEFAULT_PORT,
+    );
+    const eventServer = await isServerAlive(
+      DEFAULT_HOST,
+      this.config.get(EVENT_PORT) || EVENT_DEFAULT_PORT,
+    );
+    return { authServer, eventServer };
+  }
+
+  register(request: AuthRequest): Observable<CommonResponse> {
+    return this.authService.register(request).pipe(
+      catchError((error: unknown) => {
+        console.error("Register error: ", error);
+        return throwError(() => error);
+      }),
+    );
+  }
+
+  login(request: AuthRequest): Observable<CommonResponse> {
     return this.authService.login(request).pipe(
       catchError((error: unknown) => {
         console.error("Login error: ", error);

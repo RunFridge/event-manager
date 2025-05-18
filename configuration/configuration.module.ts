@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
-import { ConfigModule } from "@nestjs/config";
-import { validationSchema } from "./env.schema";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { JwtModule } from "@nestjs/jwt";
+import { JWT_SECRET, validationSchema } from "./env.schema";
 
 @Module({
   imports: [
@@ -8,6 +9,14 @@ import { validationSchema } from "./env.schema";
       isGlobal: true,
       validationSchema,
     }),
+    JwtModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        const secret = config.get<string>(JWT_SECRET);
+        return { global: true, secret };
+      },
+    }),
   ],
+  exports: [JwtModule],
 })
 export class ConfigurationModule {}

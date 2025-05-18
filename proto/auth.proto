@@ -1,12 +1,30 @@
 syntax = "proto3";
-
 import "google/protobuf/timestamp.proto";
+
 
 package auth;
 
 service AuthService {
     rpc Register (AuthRequest) returns (CommonResponse);
     rpc Login (AuthRequest) returns (CommonResponse);
+    rpc ActivateUser (ActivateUserRequest) returns (CommonResponse);
+    rpc AssignRole (AssignRoleRequest) returns (CommonResponse);
+    rpc ListUsers (ListUserRequest) returns (UserListResponse);
+}
+
+message ListUserRequest {
+    int32 page = 1;
+    int32 limit = 2;
+    optional bool filter_active = 3;
+}
+
+message ActivateUserRequest {
+    string user_id = 1;
+}
+
+message AssignRoleRequest {
+    string user_id = 1;
+    string role = 2;
 }
 
 message AuthRequest {
@@ -19,8 +37,16 @@ message CommonResponse {
     optional string message = 2;
     oneof data {
         TokenResponse token_response = 3;
-        RegisterResponse register_response = 4;
+        UserResponse user_response = 4;
     }
+}
+
+message UserListResponse {
+    int32 page = 1;
+    int32 limit = 2;
+    int32 total = 3;
+    optional bool filter_active = 4;
+    repeated UserResponse list = 5;
 }
 
 message TokenResponse {
@@ -30,10 +56,11 @@ message TokenResponse {
     int32 refresh_token_expires_in = 4;
 }
 
-message RegisterResponse {
-    string username = 1;
-    string role = 2;
-    bool active = 3;
-    google.protobuf.Timestamp created_at = 4;
-    google.protobuf.Timestamp updated_at = 5;
+message UserResponse {
+    string user_id = 1;
+    string username = 2;
+    string role = 3;
+    bool active = 4;
+    google.protobuf.Timestamp created_at = 5;
+    google.protobuf.Timestamp updated_at = 6;
 }

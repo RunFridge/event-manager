@@ -1,6 +1,7 @@
 import { Document, Schema, Types } from "mongoose";
 
 export interface RewardDocument extends Document {
+  _id: Types.ObjectId;
   type: "point" | "coupon" | "item";
   title: string;
   description?: string;

@@ -12,6 +12,21 @@ import { Timestamp } from "../google/protobuf/timestamp";
 
 export const protobufPackage = "auth";
 
+export interface ListUserRequest {
+  page: number;
+  limit: number;
+  filterActive?: boolean | undefined;
+}
+
+export interface ActivateUserRequest {
+  userId: string;
+}
+
+export interface AssignRoleRequest {
+  userId: string;
+  role: string;
+}
+
 export interface AuthRequest {
   username: string;
   password: string;
@@ -21,7 +36,15 @@ export interface CommonResponse {
   result: boolean;
   message?: string | undefined;
   tokenResponse?: TokenResponse | undefined;
-  registerResponse?: RegisterResponse | undefined;
+  userResponse?: UserResponse | undefined;
+}
+
+export interface UserListResponse {
+  page: number;
+  limit: number;
+  total: number;
+  filterActive?: boolean | undefined;
+  list: UserResponse[];
 }
 
 export interface TokenResponse {
@@ -31,7 +54,8 @@ export interface TokenResponse {
   refreshTokenExpiresIn: number;
 }
 
-export interface RegisterResponse {
+export interface UserResponse {
+  userId: string;
   username: string;
   role: string;
   active: boolean;
@@ -45,6 +69,12 @@ export interface AuthServiceClient {
   register(request: AuthRequest, metadata?: Metadata): Observable<CommonResponse>;
 
   login(request: AuthRequest, metadata?: Metadata): Observable<CommonResponse>;
+
+  activateUser(request: ActivateUserRequest, metadata?: Metadata): Observable<CommonResponse>;
+
+  assignRole(request: AssignRoleRequest, metadata?: Metadata): Observable<CommonResponse>;
+
+  listUsers(request: ListUserRequest, metadata?: Metadata): Observable<UserListResponse>;
 }
 
 export interface AuthServiceController {
@@ -57,11 +87,26 @@ export interface AuthServiceController {
     request: AuthRequest,
     metadata?: Metadata,
   ): Promise<CommonResponse> | Observable<CommonResponse> | CommonResponse;
+
+  activateUser(
+    request: ActivateUserRequest,
+    metadata?: Metadata,
+  ): Promise<CommonResponse> | Observable<CommonResponse> | CommonResponse;
+
+  assignRole(
+    request: AssignRoleRequest,
+    metadata?: Metadata,
+  ): Promise<CommonResponse> | Observable<CommonResponse> | CommonResponse;
+
+  listUsers(
+    request: ListUserRequest,
+    metadata?: Metadata,
+  ): Promise<UserListResponse> | Observable<UserListResponse> | UserListResponse;
 }
 
 export function AuthServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["register", "login"];
+    const grpcMethods: string[] = ["register", "login", "activateUser", "assignRole", "listUsers"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("AuthService", method)(constructor.prototype[method], method, descriptor);

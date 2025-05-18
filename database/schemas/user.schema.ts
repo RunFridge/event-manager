@@ -1,6 +1,7 @@
-import { Schema, Document } from "mongoose";
+import { Schema, Document, Types } from "mongoose";
 
 export interface UserDocument extends Document {
+  _id: Types.ObjectId;
   username: string;
   password: string;
   role: "user" | "operator" | "admin";
@@ -10,7 +11,7 @@ export interface UserDocument extends Document {
 }
 
 export const UserSchema = new Schema<UserDocument>({
-  username: { type: String, required: true },
+  username: { type: String, unique: true, required: true },
   password: { type: String, required: true },
   role: {
     type: String,

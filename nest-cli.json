@@ -7,7 +7,16 @@
     "deleteOutDir": true,
     "webpack": true,
     "tsConfigPath": "apps/gateway/tsconfig.app.json",
-    "watchAssets": true
+    "watchAssets": true,
+    "plugins": [
+      {
+        "name": "@nestjs/swagger",
+        "options": {
+          "classValidatorShim": true,
+          "introspectComments": true
+        }
+      }
+    ]
   },
   "monorepo": true,
   "root": "apps/gateway",

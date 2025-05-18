@@ -11,10 +11,14 @@ import { JwtService } from "@nestjs/jwt";
 import { UserDocument } from "database/schemas/user.schema";
 import { Model } from "mongoose";
 import {
+  ActivateUserRequest,
+  AssignRoleRequest,
   AuthRequest,
   AuthServiceController,
   AuthServiceControllerMethods,
   CommonResponse,
+  ListUserRequest,
+  UserListResponse,
 } from "proto/auth";
 import { dateToTimestamp } from "@utils/date";
 
@@ -48,7 +52,8 @@ export class AuthController implements AuthServiceController {
     });
     return {
       result: true,
-      registerResponse: {
+      userResponse: {
+        userId: createdUser._id.toString(),
         role: createdUser.role,
         username: createdUser.username,
         active: createdUser.active,
@@ -67,6 +72,12 @@ export class AuthController implements AuthServiceController {
         return {
           result: false,
           message: "username not found",
+        };
+      }
+      if (!user.active) {
+        return {
+          result: false,
+          message: "user not activated",
         };
       }
 
@@ -96,5 +107,85 @@ export class AuthController implements AuthServiceController {
         message: "Unknown error",
       };
     }
+  }
+
+  async assignRole(request: AssignRoleRequest): Promise<CommonResponse> {
+    const valid_roles = ["user", "operator", "auditor", "admin"];
+    if (!valid_roles.includes(request.role)) {
+      return { result: false, message: "invalid role" };
+    }
+    const updatedUser = await this.userModel.findOneAndUpdate(
+      { _id: request.userId },
+      { role: request.role, updatedAt: new Date() },
+      { new: true },
+    );
+    if (!updatedUser) {
+      return {
+        result: false,
+        message: "user not found",
+      };
+    }
+    return {
+      result: true,
+      userResponse: {
+        userId: "",
+        role: updatedUser.role,
+        username: updatedUser.username,
+        active: updatedUser.active,
+        createdAt: dateToTimestamp(updatedUser.createdAt),
+        updatedAt: dateToTimestamp(updatedUser.updatedAt),
+      },
+    };
+  }
+
+  async activateUser(request: ActivateUserRequest): Promise<CommonResponse> {
+    const updatedUser = await this.userModel.findOneAndUpdate(
+      { _id: request.userId },
+      { active: true, updatedAt: new Date() },
+      { new: true },
+    );
+    if (!updatedUser) {
+      return {
+        result: false,
+        message: "user not found",
+      };
+    }
+    return {
+      result: true,
+      userResponse: {
+        userId: updatedUser._id.toString(),
+        role: updatedUser.role,
+        username: updatedUser.username,
+        active: updatedUser.active,
+        createdAt: dateToTimestamp(updatedUser.createdAt),
+        updatedAt: dateToTimestamp(updatedUser.updatedAt),
+      },
+    };
+  }
+
+  async listUsers(request: ListUserRequest): Promise<UserListResponse> {
+    const { page = 1, limit = 10, filterActive } = request;
+    const offset = (page - 1) * limit;
+    const filter = filterActive ? { active: true } : {};
+    const rawList = await this.userModel
+      .find(filter)
+      .select({ password: 0 })
+      .skip(offset)
+      .limit(limit);
+    const total = await this.userModel.countDocuments(filter);
+    return {
+      page,
+      limit,
+      filterActive,
+      total,
+      list: rawList.map((u) => ({
+        userId: u._id.toString(),
+        username: u.username,
+        active: u.active,
+        role: u.role,
+        createdAt: dateToTimestamp(u.createdAt),
+        updatedAt: dateToTimestamp(u.updatedAt),
+      })),
+    };
   }
 }

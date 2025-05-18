@@ -11,6 +11,8 @@ import {
 import { DEFAULT_HOST } from "@constants/index";
 import { ConfigService } from "@nestjs/config";
 import { JwtStrategy } from "./auth/jwt.strategy";
+import { AuthModule } from "./auth/auth.module";
+import { UserModule } from "./user/user.module";
 
 @Module({
   imports: [
@@ -50,6 +52,8 @@ import { JwtStrategy } from "./auth/jwt.strategy";
         },
       ],
     }),
+    AuthModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],

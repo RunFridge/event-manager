@@ -35,7 +35,7 @@ export class AuthController {
   }
 
   /**
-   * 로그인하여 JWT 토큰을 받습니다.
+   * 로그인하여 토큰을 받습니다.
    */
   @Post("login")
   async login(@Body() request: AuthRequestDto): Promise<LoginResponseDto> {

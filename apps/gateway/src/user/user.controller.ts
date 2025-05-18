@@ -1,10 +1,20 @@
-import { Controller, Get, Logger, Query } from "@nestjs/common";
+import {
+  BadRequestException,
+  Controller,
+  Get,
+  Logger,
+  Param,
+  Patch,
+  Query,
+} from "@nestjs/common";
 import { UserService } from "./user.service";
 import { firstValueFrom } from "rxjs";
-import { UserListDto } from "../dtos/user.dto";
+import { UserDto, UserListDto } from "../dtos/user.dto";
 import { timestampToDate } from "@utils/date";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiSecurity, ApiTags } from "@nestjs/swagger";
 import { UserListQueryDto } from "../dtos/user-list-query.dto";
+import { Role } from "../roles/role.enum";
+import { Roles } from "../roles/role.decorator";
 
 @ApiTags("사용자 관리")
 @Controller("user")
@@ -36,6 +46,59 @@ export class UserController {
         createdAt: timestampToDate(u.createdAt!),
         updatedAt: timestampToDate(u.updatedAt!),
       })),
+    };
+  }
+
+  /**
+   * 유저를 활성화합니다.
+   */
+  @Roles(Role.ADMIN)
+  @ApiSecurity(Role.ADMIN)
+  @Patch(":userId/activate")
+  async activateUser(@Param("userId") userId: string): Promise<UserDto> {
+    const activateUserObservable = this.userService.activateUser({ userId });
+    const { result, message, userResponse } = await firstValueFrom(
+      activateUserObservable,
+    );
+    if (!result) throw new BadRequestException(message);
+    if (!userResponse) throw new BadRequestException(message);
+
+    return {
+      id: userResponse.userId,
+      role: userResponse.role,
+      username: userResponse.username,
+      active: userResponse.active,
+      createdAt: timestampToDate(userResponse.createdAt!),
+      updatedAt: timestampToDate(userResponse.updatedAt!),
+    };
+  }
+
+  /**
+   * 유저의 역할을 변경합니다.
+   */
+  @Roles(Role.ADMIN)
+  @ApiSecurity(Role.ADMIN)
+  @Patch(":userId/role")
+  async assignRole(
+    @Param("userId") userId: string,
+    @Query("role") role: string,
+  ): Promise<UserDto> {
+    const assignRoleObservable = this.userService.assignRole({
+      userId,
+      role,
+    });
+    const { result, message, userResponse } =
+      await firstValueFrom(assignRoleObservable);
+    if (!result) throw new BadRequestException(message);
+    if (!userResponse) throw new BadRequestException(message);
+
+    return {
+      id: userResponse.userId,
+      role: userResponse.role,
+      username: userResponse.username,
+      active: userResponse.active,
+      createdAt: timestampToDate(userResponse.createdAt!),
+      updatedAt: timestampToDate(userResponse.updatedAt!),
     };
   }
 }

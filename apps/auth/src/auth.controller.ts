@@ -21,6 +21,8 @@ import {
   UserListResponse,
 } from "proto/auth";
 import { dateToTimestamp } from "@utils/date";
+import { JwtPayload } from "apps/gateway/src/auth/jwt-payload.interface";
+import { roleFrom } from "apps/gateway/src/roles/role.enum";
 
 @Controller("auth")
 @AuthServiceControllerMethods()
@@ -85,11 +87,14 @@ export class AuthController implements AuthServiceController {
       if (!isPasswordCorrect) {
         return { result: false, message: "invalid password" };
       }
+      const payload: JwtPayload = {
+        username: user.username,
+        role: roleFrom(user.role),
+      };
 
-      const accessToken = this.jwtService.sign(
-        { username: user.username, role: user.role },
-        { expiresIn: ACCESS_TOKEN_EXPIRES_IN },
-      );
+      const accessToken = this.jwtService.sign(payload, {
+        expiresIn: ACCESS_TOKEN_EXPIRES_IN,
+      });
 
       return {
         result: true,

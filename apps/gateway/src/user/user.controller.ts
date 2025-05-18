@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Controller,
   Get,
-  Logger,
   Param,
   Patch,
   Query,
@@ -28,7 +27,6 @@ export class UserController {
   @ApiSecurity(Role.ADMIN)
   @Get()
   async listUsers(@Query() query: UserListQueryDto): Promise<UserListDto> {
-    Logger.debug(query);
     const listUserObservable = this.userService.listUsers({
       page: query.page || 1,
       limit: query.limit || 10,
@@ -47,6 +45,7 @@ export class UserController {
         role: u.role,
         createdAt: timestampToDate(u.createdAt!),
         updatedAt: timestampToDate(u.updatedAt!),
+        lastLoginAt: u.lastLoginAt ? timestampToDate(u.lastLoginAt) : undefined,
       })),
     };
   }
@@ -72,6 +71,9 @@ export class UserController {
       active: userResponse.active,
       createdAt: timestampToDate(userResponse.createdAt!),
       updatedAt: timestampToDate(userResponse.updatedAt!),
+      lastLoginAt: userResponse.lastLoginAt
+        ? timestampToDate(userResponse.lastLoginAt)
+        : undefined,
     };
   }
 
@@ -101,6 +103,9 @@ export class UserController {
       active: userResponse.active,
       createdAt: timestampToDate(userResponse.createdAt!),
       updatedAt: timestampToDate(userResponse.updatedAt!),
+      lastLoginAt: userResponse.lastLoginAt
+        ? timestampToDate(userResponse.lastLoginAt)
+        : undefined,
     };
   }
 }

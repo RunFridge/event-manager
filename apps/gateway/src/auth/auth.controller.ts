@@ -5,8 +5,9 @@ import { AuthService } from "./auth.service";
 import { LoginResponseDto } from "../dtos/login-response.dto";
 import { UserDto } from "../dtos/user.dto";
 import { ApiTags } from "@nestjs/swagger";
-import { AuthRequestDto } from "../dtos/auth-request.dto";
 import { Public } from "./public.decorator";
+import { LoginRequestDto } from "../dtos/login-request.dto";
+import { RegisterRequestDto } from "../dtos/register-request.dto";
 
 @ApiTags("인증")
 @Controller("auth")
@@ -19,7 +20,7 @@ export class AuthController {
    */
   @Public()
   @Post("register")
-  async register(@Body() request: AuthRequestDto): Promise<UserDto> {
+  async register(@Body() request: RegisterRequestDto): Promise<UserDto> {
     const registerObservable = this.authService.register(request);
     const { result, message, userResponse } =
       await firstValueFrom(registerObservable);
@@ -41,7 +42,7 @@ export class AuthController {
    */
   @Public()
   @Post("login")
-  async login(@Body() request: AuthRequestDto): Promise<LoginResponseDto> {
+  async login(@Body() request: LoginRequestDto): Promise<LoginResponseDto> {
     const loginObservable = this.authService.login(request);
     const { result, message, tokenResponse } =
       await firstValueFrom(loginObservable);

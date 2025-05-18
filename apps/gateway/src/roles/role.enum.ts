@@ -3,11 +3,10 @@ export enum Role {
   OPERATOR = "operator",
   AUDITOR = "auditor",
   ADMIN = "admin",
+  INVALID = "invalid",
 }
 
-export const roleFrom = (
-  rawRole: "user" | "operator" | "auditor" | "admin",
-): Role => {
+export const roleFrom = (rawRole: string): Role => {
   switch (rawRole) {
     case "user":
       return Role.USER;
@@ -18,6 +17,6 @@ export const roleFrom = (
     case "admin":
       return Role.ADMIN;
     default:
-      return Role.USER;
+      return Role.INVALID;
   }
 };

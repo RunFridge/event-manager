@@ -1,7 +1,7 @@
 import { IsString } from "class-validator";
-import { AuthRequest } from "proto/auth";
+import { LoginRequest } from "proto/auth";
 
-export class AuthRequestDto implements AuthRequest {
+export class LoginRequestDto implements LoginRequest {
   @IsString()
   username: string;
 

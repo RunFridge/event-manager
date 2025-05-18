@@ -3,9 +3,10 @@ import { ClientGrpc } from "@nestjs/microservices";
 import { catchError, Observable, throwError } from "rxjs";
 import {
   AUTH_SERVICE_NAME,
-  AuthRequest,
   AuthServiceClient,
   CommonResponse,
+  LoginRequest,
+  RegisterRequest,
 } from "proto/auth";
 
 @Injectable()
@@ -17,7 +18,7 @@ export class AuthService implements OnModuleInit {
       this.authClient.getService<AuthServiceClient>(AUTH_SERVICE_NAME);
   }
 
-  register(request: AuthRequest): Observable<CommonResponse> {
+  register(request: RegisterRequest): Observable<CommonResponse> {
     return this.authService.register(request).pipe(
       catchError((error: unknown) => {
         console.error("Register error: ", error);
@@ -26,7 +27,7 @@ export class AuthService implements OnModuleInit {
     );
   }
 
-  login(request: AuthRequest): Observable<CommonResponse> {
+  login(request: LoginRequest): Observable<CommonResponse> {
     return this.authService.login(request).pipe(
       catchError((error: unknown) => {
         console.error("Login error: ", error);

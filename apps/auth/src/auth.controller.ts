@@ -13,16 +13,17 @@ import { Model } from "mongoose";
 import {
   ActivateUserRequest,
   AssignRoleRequest,
-  AuthRequest,
+  LoginRequest,
   AuthServiceController,
   AuthServiceControllerMethods,
   CommonResponse,
   ListUserRequest,
   UserListResponse,
+  RegisterRequest,
 } from "proto/auth";
-import { dateToTimestamp } from "@utils/date";
+import { dateToTimestamp, timestampToDate } from "@utils/date";
 import { JwtPayload } from "apps/gateway/src/auth/jwt-payload.interface";
-import { roleFrom } from "apps/gateway/src/roles/role.enum";
+import { Role, roleFrom } from "apps/gateway/src/roles/role.enum";
 
 @Controller("auth")
 @AuthServiceControllerMethods()
@@ -38,7 +39,7 @@ export class AuthController implements AuthServiceController {
     return await hash(password, salt);
   }
 
-  async register(request: AuthRequest): Promise<CommonResponse> {
+  async register(request: RegisterRequest): Promise<CommonResponse> {
     const existingUser = await this.userModel.findOne({
       username: request.username,
     });
@@ -46,12 +47,28 @@ export class AuthController implements AuthServiceController {
       return { result: false, message: "duplicate username exists" };
     }
     const encryptedPassword = await this.hashPassword(request.password);
+    const birthday = request.birthday
+      ? timestampToDate(request.birthday)
+      : undefined;
     const createdUser = await this.userModel.create({
       username: request.username,
       password: encryptedPassword,
+      birthday,
       active: false,
       role: "user",
+      condition: {
+        loginStreakDays: 0,
+        referralCount: 0,
+      },
     });
+
+    if (request.referral) {
+      await this.userModel.findOneAndUpdate(
+        { username: request.referral },
+        { $inc: { "condition.referralCount": 1 } },
+      );
+    }
+
     return {
       result: true,
       userResponse: {
@@ -59,13 +76,37 @@ export class AuthController implements AuthServiceController {
         role: createdUser.role,
         username: createdUser.username,
         active: createdUser.active,
+        birthday: createdUser.birthday
+          ? dateToTimestamp(createdUser.birthday)
+          : undefined,
         createdAt: dateToTimestamp(createdUser.createdAt),
         updatedAt: dateToTimestamp(createdUser.updatedAt),
+        lastLoginAt: undefined,
       },
     };
   }
 
-  async login(request: AuthRequest): Promise<CommonResponse> {
+  private getMidnightDate(date: Date): Date {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  }
+
+  private computeLoginStreak(
+    previousLoginStreak: number,
+    now: Date,
+    lastLoginDate?: Date,
+  ): number {
+    if (!lastLoginDate) return 1;
+    const nowMidnight = this.getMidnightDate(now);
+    const lastMidnight = this.getMidnightDate(lastLoginDate);
+    if (nowMidnight.getTime() === lastMidnight.getTime())
+      return previousLoginStreak;
+    const diffTime = nowMidnight.getTime() - lastMidnight.getTime();
+    const oneDayMs = 24 * 60 * 60 * 1_000;
+    if (diffTime > oneDayMs) return previousLoginStreak++;
+    return previousLoginStreak;
+  }
+
+  async login(request: LoginRequest): Promise<CommonResponse> {
     try {
       const user = await this.userModel.findOne({
         username: request.username,
@@ -96,6 +137,19 @@ export class AuthController implements AuthServiceController {
         expiresIn: ACCESS_TOKEN_EXPIRES_IN,
       });
 
+      const lastLoginDate = user.lastLoginAt;
+      const now = new Date();
+
+      const loginStreakDays = this.computeLoginStreak(
+        user.condition.loginStreakDays,
+        now,
+        lastLoginDate,
+      );
+      await this.userModel.updateOne(
+        { _id: user._id },
+        { lastLoginAt: now, condition: { loginStreakDays } },
+      );
+
       return {
         result: true,
         tokenResponse: {
@@ -115,13 +169,13 @@ export class AuthController implements AuthServiceController {
   }
 
   async assignRole(request: AssignRoleRequest): Promise<CommonResponse> {
-    const valid_roles = ["user", "operator", "auditor", "admin"];
-    if (!valid_roles.includes(request.role)) {
+    const role = roleFrom(request.role);
+    if (role === Role.INVALID) {
       return { result: false, message: "invalid role" };
     }
     const updatedUser = await this.userModel.findOneAndUpdate(
       { _id: request.userId },
-      { role: request.role, updatedAt: new Date() },
+      { role, updatedAt: new Date() },
       { new: true },
     );
     if (!updatedUser) {
@@ -133,12 +187,18 @@ export class AuthController implements AuthServiceController {
     return {
       result: true,
       userResponse: {
-        userId: "",
+        userId: updatedUser._id.toString(),
         role: updatedUser.role,
         username: updatedUser.username,
         active: updatedUser.active,
+        birthday: updatedUser.birthday
+          ? dateToTimestamp(updatedUser.birthday)
+          : undefined,
         createdAt: dateToTimestamp(updatedUser.createdAt),
         updatedAt: dateToTimestamp(updatedUser.updatedAt),
+        lastLoginAt: updatedUser.lastLoginAt
+          ? dateToTimestamp(updatedUser.lastLoginAt)
+          : undefined,
       },
     };
   }
@@ -162,8 +222,14 @@ export class AuthController implements AuthServiceController {
         role: updatedUser.role,
         username: updatedUser.username,
         active: updatedUser.active,
+        birthday: updatedUser.birthday
+          ? dateToTimestamp(updatedUser.birthday)
+          : undefined,
         createdAt: dateToTimestamp(updatedUser.createdAt),
         updatedAt: dateToTimestamp(updatedUser.updatedAt),
+        lastLoginAt: updatedUser.lastLoginAt
+          ? dateToTimestamp(updatedUser.lastLoginAt)
+          : undefined,
       },
     };
   }
@@ -188,8 +254,10 @@ export class AuthController implements AuthServiceController {
         username: u.username,
         active: u.active,
         role: u.role,
+        birthday: u.birthday ? dateToTimestamp(u.birthday) : undefined,
         createdAt: dateToTimestamp(u.createdAt),
         updatedAt: dateToTimestamp(u.updatedAt),
+        lastLoginAt: u.lastLoginAt ? dateToTimestamp(u.lastLoginAt) : undefined,
       })),
     };
   }

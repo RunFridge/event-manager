@@ -8,6 +8,14 @@ import {
 } from "class-validator";
 import { UserListResponse } from "proto/auth";
 
+export class UserConditionDto {
+  @IsInt()
+  loginStreakDays: number;
+
+  @IsInt()
+  referralCount: number;
+}
+
 export class UserDto {
   @IsString()
   id: string;
@@ -26,6 +34,11 @@ export class UserDto {
 
   @IsDate()
   updatedAt: Date;
+
+  @IsDate()
+  lastLoginAt?: Date;
+
+  condition?: UserConditionDto;
 }
 
 export class UserListDto implements Omit<UserListResponse, "list"> {

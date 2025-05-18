@@ -3,7 +3,7 @@ import { Reflector } from "@nestjs/core";
 import { AuthGuard } from "@nestjs/passport";
 import { Role } from "../roles/role.enum";
 import { ROLES_KEY } from "../roles/role.decorator";
-import { JwtService } from "@nestjs/jwt";
+import { JwtService, TokenExpiredError } from "@nestjs/jwt";
 import { IS_PUBLIC_KEY } from "./public.decorator";
 import { JwtPayload } from "./jwt-payload.interface";
 import type { Request } from "express";
@@ -36,10 +36,14 @@ export class JwtAuthGuard extends AuthGuard("jwt") {
       if (type !== "Bearer") return false;
       if (!token) return false;
 
-      const decodedToken = this.jwtService.verify<JwtPayload>(token);
-      if (!decodedToken) return false;
-      if (!decodedToken.role) return false;
-      if (!requirdRoles.includes(decodedToken.role)) return false;
+      try {
+        const decodedToken = this.jwtService.verify<JwtPayload>(token);
+        if (!decodedToken) return false;
+        if (!decodedToken.role) return false;
+        if (!requirdRoles.includes(decodedToken.role)) return false;
+      } catch (err: unknown) {
+        if (err instanceof TokenExpiredError) return false;
+      }
     }
 
     return super.canActivate(ctx);

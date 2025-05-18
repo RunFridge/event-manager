@@ -27,7 +27,14 @@ export interface AssignRoleRequest {
   role: string;
 }
 
-export interface AuthRequest {
+export interface RegisterRequest {
+  username: string;
+  password: string;
+  referral?: string | undefined;
+  birthday?: Timestamp | undefined;
+}
+
+export interface LoginRequest {
   username: string;
   password: string;
 }
@@ -59,16 +66,18 @@ export interface UserResponse {
   username: string;
   role: string;
   active: boolean;
+  birthday: Timestamp | undefined;
   createdAt: Timestamp | undefined;
   updatedAt: Timestamp | undefined;
+  lastLoginAt: Timestamp | undefined;
 }
 
 export const AUTH_PACKAGE_NAME = "auth";
 
 export interface AuthServiceClient {
-  register(request: AuthRequest, metadata?: Metadata): Observable<CommonResponse>;
+  register(request: RegisterRequest, metadata?: Metadata): Observable<CommonResponse>;
 
-  login(request: AuthRequest, metadata?: Metadata): Observable<CommonResponse>;
+  login(request: LoginRequest, metadata?: Metadata): Observable<CommonResponse>;
 
   activateUser(request: ActivateUserRequest, metadata?: Metadata): Observable<CommonResponse>;
 
@@ -79,12 +88,12 @@ export interface AuthServiceClient {
 
 export interface AuthServiceController {
   register(
-    request: AuthRequest,
+    request: RegisterRequest,
     metadata?: Metadata,
   ): Promise<CommonResponse> | Observable<CommonResponse> | CommonResponse;
 
   login(
-    request: AuthRequest,
+    request: LoginRequest,
     metadata?: Metadata,
   ): Promise<CommonResponse> | Observable<CommonResponse> | CommonResponse;
 

@@ -6,6 +6,7 @@ import { LoginResponseDto } from "../dtos/login-response.dto";
 import { UserDto } from "../dtos/user.dto";
 import { ApiTags } from "@nestjs/swagger";
 import { AuthRequestDto } from "../dtos/auth-request.dto";
+import { Public } from "./public.decorator";
 
 @ApiTags("인증")
 @Controller("auth")
@@ -16,6 +17,7 @@ export class AuthController {
    * 신규 유저를 등록합니다.
    * @description `active` 필드는 기본적으로 false로 등록됩니다.
    */
+  @Public()
   @Post("register")
   async register(@Body() request: AuthRequestDto): Promise<UserDto> {
     const registerObservable = this.authService.register(request);
@@ -37,6 +39,7 @@ export class AuthController {
   /**
    * 로그인하여 토큰을 받습니다.
    */
+  @Public()
   @Post("login")
   async login(@Body() request: AuthRequestDto): Promise<LoginResponseDto> {
     const loginObservable = this.authService.login(request);

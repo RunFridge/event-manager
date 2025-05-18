@@ -24,6 +24,8 @@ export class UserController {
   /**
    * 사용자 목록을 조회합니다.
    */
+  @Roles(Role.ADMIN)
+  @ApiSecurity(Role.ADMIN)
   @Get()
   async listUsers(@Query() query: UserListQueryDto): Promise<UserListDto> {
     Logger.debug(query);

@@ -6,6 +6,7 @@ import { ROLES_KEY } from "../roles/role.decorator";
 import { JwtService } from "@nestjs/jwt";
 import { IS_PUBLIC_KEY } from "./public.decorator";
 import { JwtPayload } from "./jwt-payload.interface";
+import type { Request } from "express";
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard("jwt") {
@@ -29,7 +30,7 @@ export class JwtAuthGuard extends AuthGuard("jwt") {
 
     if (requirdRoles) {
       const req = ctx.switchToHttp().getRequest<Request>();
-      const authHeader = req.headers.get("Authorization");
+      const authHeader = req.headers.authorization;
       if (!authHeader) return false;
       const [type, token] = authHeader.split(" ");
       if (type !== "Bearer") return false;

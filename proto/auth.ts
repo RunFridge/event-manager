@@ -12,6 +12,10 @@ import { Timestamp } from "../google/protobuf/timestamp";
 
 export const protobufPackage = "auth";
 
+export interface GetUserRequest {
+  userId: string;
+}
+
 export interface ListUserRequest {
   page: number;
   limit: number;
@@ -70,6 +74,19 @@ export interface UserResponse {
   createdAt: Timestamp | undefined;
   updatedAt: Timestamp | undefined;
   lastLoginAt: Timestamp | undefined;
+  condition?: Condition | undefined;
+  inventory?: Inventory | undefined;
+}
+
+export interface Condition {
+  loginStreakDays: number;
+  referralCount: number;
+}
+
+export interface Inventory {
+  points: number;
+  coupons: string[];
+  items: string[];
 }
 
 export const AUTH_PACKAGE_NAME = "auth";
@@ -84,6 +101,8 @@ export interface AuthServiceClient {
   assignRole(request: AssignRoleRequest, metadata?: Metadata): Observable<CommonResponse>;
 
   listUsers(request: ListUserRequest, metadata?: Metadata): Observable<UserListResponse>;
+
+  getUser(request: GetUserRequest, metadata?: Metadata): Observable<CommonResponse>;
 }
 
 export interface AuthServiceController {
@@ -111,11 +130,16 @@ export interface AuthServiceController {
     request: ListUserRequest,
     metadata?: Metadata,
   ): Promise<UserListResponse> | Observable<UserListResponse> | UserListResponse;
+
+  getUser(
+    request: GetUserRequest,
+    metadata?: Metadata,
+  ): Promise<CommonResponse> | Observable<CommonResponse> | CommonResponse;
 }
 
 export function AuthServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["register", "login", "activateUser", "assignRole", "listUsers"];
+    const grpcMethods: string[] = ["register", "login", "activateUser", "assignRole", "listUsers", "getUser"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("AuthService", method)(constructor.prototype[method], method, descriptor);

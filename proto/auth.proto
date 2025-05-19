@@ -1,7 +1,6 @@
 syntax = "proto3";
 import "google/protobuf/timestamp.proto";
 
-
 package auth;
 
 service AuthService {
@@ -10,6 +9,11 @@ service AuthService {
     rpc ActivateUser (ActivateUserRequest) returns (CommonResponse);
     rpc AssignRole (AssignRoleRequest) returns (CommonResponse);
     rpc ListUsers (ListUserRequest) returns (UserListResponse);
+    rpc GetUser (GetUserRequest) returns (CommonResponse);
+}
+
+message GetUserRequest {
+    string user_id = 1;
 }
 
 message ListUserRequest {
@@ -72,4 +76,17 @@ message UserResponse {
     google.protobuf.Timestamp created_at = 6;
     google.protobuf.Timestamp updated_at = 7;
     google.protobuf.Timestamp last_login_at = 8;
+    optional Condition condition = 9;
+    optional Inventory inventory = 10;
+}
+
+message Condition {
+    int32 loginStreakDays = 1;
+    int32 referralCount = 2;
+}
+
+message Inventory {
+    int32 points = 1;
+    repeated string coupons = 2;
+    repeated string items = 3;
 }

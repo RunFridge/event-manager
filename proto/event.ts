@@ -8,31 +8,118 @@
 import { Metadata } from "@grpc/grpc-js";
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
+import { Timestamp } from "../google/protobuf/timestamp";
 
 export const protobufPackage = "event";
 
-export interface FindOneRequest {
+export interface ListEventsRequest {
+  page: number;
+  limit: number;
+  filterActive?: boolean | undefined;
+  filterType?: string | undefined;
+}
+
+export interface GetEventRequest {
   eventId: string;
 }
 
-export interface Event {
+export interface CreateEventRequest {
   title: string;
+  description?: string | undefined;
+  rewardIds: string[];
+}
+
+export interface UpdateEventRequest {
+  eventId: string;
+  title: string;
+  description?: string | undefined;
+  rewardIds: string[];
+}
+
+export interface DeleteEventRequest {
+  eventId: string;
+}
+
+export interface ListEventsResponse {
+  page: number;
+  limit: number;
+  total: number;
+  filterActive?: boolean | undefined;
+  filterType?: string | undefined;
+  list: EventResponse[];
+}
+
+export interface CommonResponse {
+  result: boolean;
+  message?: string | undefined;
+  eventResponse?: EventResponse | undefined;
+}
+
+export interface Reward {
+  rewardId: string;
   type: string;
+  title: string;
+  description?: string | undefined;
+  points?: number | undefined;
+  coupons: string[];
+  items: string[];
+  active?: boolean | undefined;
+}
+
+export interface EventResponse {
+  eventId: string;
+  title: string;
+  description?: string | undefined;
+  rewards: Reward[];
+  active?: boolean | undefined;
+  createdAt?: Timestamp | undefined;
+  updatedAt?: Timestamp | undefined;
 }
 
 export const EVENT_PACKAGE_NAME = "event";
 
 export interface EventServiceClient {
-  findOne(request: FindOneRequest, metadata?: Metadata): Observable<Event>;
+  listEvents(request: ListEventsRequest, metadata?: Metadata): Observable<ListEventsResponse>;
+
+  getEvent(request: GetEventRequest, metadata?: Metadata): Observable<CommonResponse>;
+
+  createEvent(request: CreateEventRequest, metadata?: Metadata): Observable<CommonResponse>;
+
+  updateEvent(request: UpdateEventRequest, metadata?: Metadata): Observable<CommonResponse>;
+
+  deleteEvent(request: DeleteEventRequest, metadata?: Metadata): Observable<CommonResponse>;
 }
 
 export interface EventServiceController {
-  findOne(request: FindOneRequest, metadata?: Metadata): Promise<Event> | Observable<Event> | Event;
+  listEvents(
+    request: ListEventsRequest,
+    metadata?: Metadata,
+  ): Promise<ListEventsResponse> | Observable<ListEventsResponse> | ListEventsResponse;
+
+  getEvent(
+    request: GetEventRequest,
+    metadata?: Metadata,
+  ): Promise<CommonResponse> | Observable<CommonResponse> | CommonResponse;
+
+  createEvent(
+    request: CreateEventRequest,
+    metadata?: Metadata,
+  ): Promise<CommonResponse> | Observable<CommonResponse> | CommonResponse;
+
+  updateEvent(
+    request: UpdateEventRequest,
+    metadata?: Metadata,
+  ): Promise<CommonResponse> | Observable<CommonResponse> | CommonResponse;
+
+  deleteEvent(
+    request: DeleteEventRequest,
+    metadata?: Metadata,
+  ): Promise<CommonResponse> | Observable<CommonResponse> | CommonResponse;
 }
 
 export function EventServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["findOne"];
+    const grpcMethods: string[] = ["listEvents", "getEvent", "createEvent", "updateEvent", "deleteEvent"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("EventService", method)(constructor.prototype[method], method, descriptor);

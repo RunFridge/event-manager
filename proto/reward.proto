@@ -1,0 +1,92 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+package reward;
+
+service RewardService {
+    rpc CreateReward (CreateRewardRequest) returns (CommonResponse);
+    rpc UpdateReward (UpdateRewardRequest) returns (CommonResponse);
+    rpc ListReward (ListRewardRequest) returns (ListRewardResponse);
+    rpc ListUserReward (ListUserRewardRequest) returns (ListUserRewardResponse);
+    rpc ClaimReward (ClaimRewardRequest) returns (CommonResponse);
+}
+
+message CreateRewardRequest {
+    string type = 1;
+    string title = 2;
+    optional string description = 3;
+    optional int32 points = 4;
+    repeated string coupons = 5;
+    repeated string items = 6;
+    optional bool active = 7;
+}
+
+message UpdateRewardRequest {
+    string reward_id = 1;
+    string type = 2;
+    string title = 3;
+    optional string description = 4;
+    optional int32 points = 5;
+    repeated string coupons = 6;
+    repeated string items = 7;
+    optional bool active = 8;
+}
+
+message ListRewardRequest {
+    int32 page = 1;
+    int32 limit = 2;
+    int32 total = 3;
+    optional bool filter_active = 4;
+    optional string filter_type = 5;
+}
+
+message ListUserRewardRequest {
+    int32 page = 1;
+    int32 limit = 2;
+    int32 total = 3;
+    optional bool filter_claimed = 4;
+    optional string filter_type = 5;
+}
+
+message ClaimRewardRequest {
+    string user_id = 1;
+    string user_reward_id = 2;
+}
+
+message ListRewardResponse {
+    int32 page = 1;
+    int32 limit = 2;
+    int32 total = 3;
+    optional bool filter_active = 4;
+    optional string filter_type = 5;
+    repeated RewardResponse list = 6;
+}
+
+message ListUserRewardResponse {
+    int32 page = 1;
+    int32 limit = 2;
+    int32 total = 3;
+    optional bool filter_claimed = 4;
+    optional string filter_type = 5;
+    repeated RewardResponse list = 6;
+}
+
+message CommonResponse {
+    bool result = 1;
+    optional string message = 2;
+    RewardResponse reward_response = 3;
+}
+
+message RewardResponse {
+    string reward_id = 1;
+    string type = 2;
+    string title = 3;
+    string description = 4;
+    int32 points = 5;
+    repeated string coupons = 6;
+    repeated string items = 7;
+    bool active = 8;
+    google.protobuf.Timestamp created_at = 9;
+    google.protobuf.Timestamp updated_at = 10;
+}
+

@@ -14,12 +14,13 @@ export class AppService {
   constructor(private config: ConfigService) {}
 
   async alive(): Promise<AliveResponseDto> {
+    const isProduction = process.env.NODE_ENV === "production";
     const authServer = await isServerAlive(
-      DEFAULT_HOST,
+      isProduction ? "auth" : DEFAULT_HOST,
       this.config.get(AUTH_PORT) || AUTH_DEFAULT_PORT,
     );
     const eventServer = await isServerAlive(
-      DEFAULT_HOST,
+      isProduction ? "event" : DEFAULT_HOST,
       this.config.get(EVENT_PORT) || EVENT_DEFAULT_PORT,
     );
     return { authServer, eventServer };

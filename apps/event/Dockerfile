@@ -36,5 +36,4 @@ COPY --from=build /app/proto ./proto
 
 ENV NODE_ENV production
 
-EXPOSE 5000
 CMD ["node", "dist/main"]

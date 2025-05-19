@@ -4,6 +4,38 @@
 
 ## 실행 가이드
 
+1. Clone
+
+```sh
+git clone https://github.com/RunFridge/event-manager.git
+```
+
+2. Install Dependencies
+
+```sh
+pnpm install --frozen-lockfile
+```
+
+3. `.env` 설정
+
+```sh
+# 복사 후 필요 내용 작성
+cp .env.sample .env
+```
+
+4. 개발 모드로 실행 (선택)
+
+```sh
+pnpm start:dev
+```
+
+5. Docker Compose 실행
+
+```sh
+docker compose up -d
+```
+
+6. Swagger 문서 참조 [http://localhost:3000/docs]
 
 ## 시스템 구조
 
@@ -207,4 +239,7 @@ OpenAPI spec을 사용한 [@nestjs/swagger](https://docs.nestjs.com/openapi/intr
 - 테스트 코드 작성
 - 오류 메시지 체계화
 - MSA Auto Horizontal Scaling / Load Balancing
+
   - Roundrobin
+
+- 현재 편의를 위해서 사용자 생성시 "admin"으로 생성되도록 설정하여, 추후 환경 변수에 따른 관리자 계정 seed 로직 추가 필요

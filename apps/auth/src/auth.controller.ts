@@ -64,7 +64,7 @@ export class AuthController implements AuthServiceController {
       password: encryptedPassword,
       birthday,
       active: false,
-      role: "user",
+      role: "admin",
       condition: {
         loginStreakDays: 0,
         referralCount: 0,

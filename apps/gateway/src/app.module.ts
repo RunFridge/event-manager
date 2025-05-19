@@ -30,13 +30,15 @@ import { AuditModule } from "./audit/audit.module";
           name: AUTH_SERVICE_NAME,
           inject: [ConfigService],
           useFactory: (config: ConfigService) => {
+            const isProduction = process.env.NODE_ENV === "production";
             const authPort = config.get<number>("AUTH_PORT");
+            const host = isProduction ? "auth" : DEFAULT_HOST;
             return {
               transport: Transport.GRPC,
               options: {
                 package: authPackage,
                 protoPath: "proto/auth.proto",
-                url: `${DEFAULT_HOST}:${authPort}`,
+                url: `${host}:${authPort}`,
               },
             };
           },
@@ -45,13 +47,15 @@ import { AuditModule } from "./audit/audit.module";
           name: EVENT_SERVICE_NAME,
           inject: [ConfigService],
           useFactory: (config: ConfigService) => {
+            const isProduction = process.env.NODE_ENV === "production";
             const eventPort = config.get<number>("EVENT_PORT");
+            const host = isProduction ? "event" : DEFAULT_HOST;
             return {
               transport: Transport.GRPC,
               options: {
                 package: eventPackage,
                 protoPath: "proto/event.proto",
-                url: `${DEFAULT_HOST}:${eventPort}`,
+                url: `${host}:${eventPort}`,
               },
             };
           },

@@ -143,8 +143,8 @@ export class AuthController implements AuthServiceController {
       });
       const refreshToken = hashify(user.username + Date.now());
       this.tokenStore.set(
-        refreshToken,
         user.username,
+        refreshToken,
         REFRESH_TOKEN_EXPIRES_IN,
       );
 
@@ -181,18 +181,17 @@ export class AuthController implements AuthServiceController {
 
   async refreshToken(request: TokenRequest): Promise<CommonResponse> {
     const { accessToken, refreshToken } = request;
-    const tokenStoreUsername = await this.tokenStore.get<string>(refreshToken);
-    if (!tokenStoreUsername)
-      return { result: false, message: "invalid refresh token" };
     const payload = this.jwtService.verify<JwtPayload>(accessToken, {
       ignoreExpiration: true,
     });
-    if (
-      !payload ||
-      !payload.username ||
-      payload.username !== tokenStoreUsername
-    ) {
+    if (!payload || !payload.username) {
       return { result: false, message: "invalid access token" };
+    }
+    const tokenStoreRefreshToken = await this.tokenStore.get<string>(
+      payload.username,
+    );
+    if (!tokenStoreRefreshToken || tokenStoreRefreshToken !== refreshToken) {
+      return { result: false, message: "invalid refresh token" };
     }
     const newAccessToken = this.jwtService.sign(payload, {
       expiresIn: ACCESS_TOKEN_EXPIRES_IN,
@@ -210,8 +209,14 @@ export class AuthController implements AuthServiceController {
   }
 
   async revokeToken(request: TokenRequest): Promise<CommonResponse> {
-    const { refreshToken } = request;
-    await this.tokenStore.del(refreshToken);
+    const { accessToken } = request;
+    const payload = this.jwtService.verify<JwtPayload>(accessToken, {
+      ignoreExpiration: true,
+    });
+    if (!payload || !payload.username) {
+      return { result: false, message: "invalid access token" };
+    }
+    await this.tokenStore.del(payload.username);
     return {
       result: true,
       message: "token revoked",

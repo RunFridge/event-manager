@@ -12,16 +12,17 @@ interface EventDocument extends Document {
   updatedAt: Date;
 }
 
-export const EventSchema = new Schema<EventDocument>({
-  type: {
-    type: String,
-    required: true,
-    enum: ["birthday", "login", "invite"],
+export const EventSchema = new Schema<EventDocument>(
+  {
+    type: {
+      type: String,
+      required: true,
+      enum: ["birthday", "login", "invite"],
+    },
+    title: { type: String, required: true },
+    description: String,
+    rewards: [RewardSchema],
+    active: { type: Boolean, default: false },
   },
-  title: { type: String, required: true },
-  description: String,
-  rewards: [RewardSchema],
-  active: { type: Boolean, default: false },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-});
+  { timestamps: true },
+);

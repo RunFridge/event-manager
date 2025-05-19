@@ -6,6 +6,12 @@ interface Condition {
   referralCount: number;
 }
 
+interface Inventory {
+  point: number;
+  coupons: string[];
+  items: string[];
+}
+
 export interface UserDocument extends Document {
   _id: Types.ObjectId;
   username: string;
@@ -17,6 +23,7 @@ export interface UserDocument extends Document {
   updatedAt: Date;
   lastLoginAt?: Date;
   condition: Condition;
+  inventory: Inventory;
 }
 
 const ConditionSchema = new Schema(
@@ -27,18 +34,29 @@ const ConditionSchema = new Schema(
   { _id: false },
 );
 
-export const UserSchema = new Schema<UserDocument>({
-  username: { type: String, unique: true, required: true },
-  password: { type: String, required: true },
-  role: {
-    type: String,
-    default: Role.USER,
-    enum: [Role.USER, Role.ADMIN, Role.AUDITOR, Role.OPERATOR],
+const InventorySchema = new Schema(
+  {
+    point: { type: Number, default: 0 },
+    coupons: { type: [String], default: [] },
+    items: { type: [String], default: [] },
   },
-  active: { type: Boolean, default: false },
-  birthday: { type: Date, required: false },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-  lastLoginAt: { type: Date, required: false },
-  condition: { type: ConditionSchema, default: {} },
-});
+  { _id: false },
+);
+
+export const UserSchema = new Schema<UserDocument>(
+  {
+    username: { type: String, unique: true, required: true },
+    password: { type: String, required: true },
+    role: {
+      type: String,
+      default: Role.USER,
+      enum: [Role.USER, Role.ADMIN, Role.AUDITOR, Role.OPERATOR],
+    },
+    active: { type: Boolean, default: false },
+    birthday: { type: Date, required: false },
+    lastLoginAt: { type: Date, required: false },
+    condition: { type: ConditionSchema, default: {} },
+    inventory: { type: InventorySchema, default: {} },
+  },
+  { timestamps: true },
+);

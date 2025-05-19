@@ -13,33 +13,34 @@ export interface RewardDocument extends Document {
   updatedAt: Date;
 }
 
-export const RewardSchema = new Schema<RewardDocument>({
-  type: {
-    type: String,
-    required: true,
-    enum: ["point", "coupon", "item"],
-  },
-  title: String,
-  description: String,
-  points: {
-    type: Number,
-    required: function () {
-      return this.type === "point";
+export const RewardSchema = new Schema<RewardDocument>(
+  {
+    type: {
+      type: String,
+      required: true,
+      enum: ["point", "coupon", "item"],
     },
-  },
-  coupons: {
-    type: [Types.ObjectId],
-    required: function () {
-      return this.type === "coupon";
+    title: String,
+    description: String,
+    points: {
+      type: Number,
+      required: function () {
+        return this.type === "point";
+      },
     },
-  },
-  items: {
-    type: [Types.ObjectId],
-    required: function () {
-      return this.type === "item";
+    coupons: {
+      type: [Types.ObjectId],
+      required: function () {
+        return this.type === "coupon";
+      },
     },
+    items: {
+      type: [Types.ObjectId],
+      required: function () {
+        return this.type === "item";
+      },
+    },
+    active: { type: Boolean, default: false },
   },
-  active: { type: Boolean, default: false },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-});
+  { timestamps: true },
+);

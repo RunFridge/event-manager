@@ -20,6 +20,7 @@ import {
   ListUserRequest,
   UserListResponse,
   RegisterRequest,
+  GetUserRequest,
 } from "proto/auth";
 import { dateToTimestamp, timestampToDate } from "@utils/date";
 import { JwtPayload } from "apps/gateway/src/auth/jwt-payload.interface";
@@ -240,7 +241,7 @@ export class AuthController implements AuthServiceController {
     const filter = filterActive ? { active: true } : {};
     const rawList = await this.userModel
       .find(filter)
-      .select({ password: 0 })
+      .select({ password: 0, condition: 0, inventory: 0 })
       .skip(offset)
       .limit(limit);
     const total = await this.userModel.countDocuments(filter);
@@ -259,6 +260,42 @@ export class AuthController implements AuthServiceController {
         updatedAt: dateToTimestamp(u.updatedAt),
         lastLoginAt: u.lastLoginAt ? dateToTimestamp(u.lastLoginAt) : undefined,
       })),
+    };
+  }
+
+  async getUser(request: GetUserRequest): Promise<CommonResponse> {
+    const { userId } = request;
+    const user = await this.userModel.findById(userId).select({ password: 0 });
+    if (!user) {
+      return {
+        result: false,
+        message: "user not found",
+      };
+    }
+    return {
+      result: true,
+      message: "hello",
+      userResponse: {
+        userId: user._id.toString(),
+        role: user.role,
+        username: user.username,
+        active: user.active,
+        birthday: user.birthday ? dateToTimestamp(user.birthday) : undefined,
+        createdAt: dateToTimestamp(user.createdAt),
+        updatedAt: dateToTimestamp(user.updatedAt),
+        lastLoginAt: user.lastLoginAt
+          ? dateToTimestamp(user.lastLoginAt)
+          : undefined,
+        condition: {
+          loginStreakDays: user.condition.loginStreakDays,
+          referralCount: user.condition.referralCount,
+        },
+        inventory: {
+          point: user.inventory.point,
+          items: user.inventory.items,
+          coupons: user.inventory.coupons,
+        },
+      },
     };
   }
 }

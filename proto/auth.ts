@@ -84,7 +84,7 @@ export interface Condition {
 }
 
 export interface Inventory {
-  points: number;
+  point: number;
   coupons: string[];
   items: string[];
 }

@@ -136,7 +136,7 @@ OpenAPI spec을 사용한 [@nestjs/swagger](https://docs.nestjs.com/openapi/intr
 - [x] *[GET]* /user : 사용자 정보 목록 조회 (ADMIN | OPERATOR | AUDITOR)
 - [x] *[GET]* /user/{id} : 사용자 정보 상세 조회 (ADMIN | OPERATOR | AUDITOR)
 - [x] *[PATCH]* /user/{id}/activate : 사용자 활성화 (ADMIN | OPERATOR)
-- [x] *[PATCH]* /user/{id}/role : 사용자 권한 변경 (ADMIN | OPERATOR)
+- [x] *[PATCH]* /user/{id}/role : 사용자 권한 변경 (ADMIN)
 
 ### 이벤트 관련
 

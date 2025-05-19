@@ -6,6 +6,7 @@ import {
   AUTH_SERVICE_NAME,
   AuthServiceClient,
   CommonResponse,
+  GetUserRequest,
   ListUserRequest,
   UserListResponse,
 } from "proto/auth";
@@ -33,6 +34,15 @@ export class UserService implements OnModuleInit {
     return this.authService.assignRole(request).pipe(
       catchError((error: unknown) => {
         console.error("Assign role error: ", error);
+        return throwError(() => error);
+      }),
+    );
+  }
+
+  getUser(request: GetUserRequest): Observable<CommonResponse> {
+    return this.authService.getUser(request).pipe(
+      catchError((error: unknown) => {
+        console.error("Get user error: ", error);
         return throwError(() => error);
       }),
     );

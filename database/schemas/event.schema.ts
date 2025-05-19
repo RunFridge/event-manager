@@ -1,7 +1,7 @@
 import { Document, Schema, Types } from "mongoose";
 import { RewardDocument, RewardSchema } from "./reward.schema";
 
-interface EventDocument extends Document {
+export interface EventDocument extends Document {
   _id: Types.ObjectId;
   type: "birthday" | "login" | "invite";
   title: string;

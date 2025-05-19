@@ -40,6 +40,7 @@ export class JwtAuthGuard extends AuthGuard("jwt") {
         const decodedToken = this.jwtService.verify<JwtPayload>(token);
         if (!decodedToken) return false;
         if (!decodedToken.role) return false;
+        if (decodedToken.role === Role.ADMIN) return true;
         if (!requirdRoles.includes(decodedToken.role)) return false;
       } catch (err: unknown) {
         if (err instanceof TokenExpiredError) return false;

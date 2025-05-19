@@ -1,8 +1,8 @@
-import { Controller, Get, UseGuards } from "@nestjs/common";
+import { Controller, Get } from "@nestjs/common";
 import { AppService } from "./app.service";
 import { AliveResponseDto } from "./dtos/alive-response.dto";
-import { JwtAuthGuard } from "./auth/jwt-auth.guard";
 import { ApiTags } from "@nestjs/swagger";
+import { Public } from "./auth/public.decorator";
 
 @ApiTags("일반")
 @Controller()
@@ -12,7 +12,7 @@ export class AppController {
   /**
    * MSA 서버의 상태를 확인합니다.
    */
-  @UseGuards(JwtAuthGuard)
+  @Public()
   @Get("alive")
   async checkAlive(): Promise<AliveResponseDto> {
     return this.appService.alive();

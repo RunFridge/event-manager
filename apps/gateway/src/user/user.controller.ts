@@ -23,8 +23,8 @@ export class UserController {
   /**
    * 사용자 목록을 조회합니다.
    */
-  @Roles(Role.ADMIN)
-  @ApiSecurity(Role.ADMIN)
+  @Roles(Role.OPERATOR, Role.AUDITOR)
+  @ApiSecurity({ allowed: [Role.OPERATOR, Role.AUDITOR] })
   @Get()
   async listUsers(@Query() query: UserListQueryDto): Promise<UserListDto> {
     const listUserObservable = this.userService.listUsers({
@@ -51,10 +51,44 @@ export class UserController {
   }
 
   /**
+   * 사용자 상세 정보를 조회합니다.
+   */
+  @Roles(Role.OPERATOR, Role.AUDITOR)
+  @ApiSecurity({ allowed: [Role.OPERATOR, Role.AUDITOR] })
+  @Get(":userId")
+  async getUser(@Param("userId") userId: string): Promise<UserDto> {
+    const getUserObservable = this.userService.getUser({ userId });
+    const { result, userResponse, message } =
+      await firstValueFrom(getUserObservable);
+    if (!result) throw new BadRequestException(message);
+    if (!userResponse) throw new BadRequestException(message);
+    return {
+      id: userResponse.userId,
+      role: userResponse.role,
+      username: userResponse.username,
+      active: userResponse.active,
+      createdAt: timestampToDate(userResponse.createdAt!),
+      updatedAt: timestampToDate(userResponse.updatedAt!),
+      lastLoginAt: userResponse.lastLoginAt
+        ? timestampToDate(userResponse.lastLoginAt)
+        : undefined,
+      condition: {
+        loginStreakDays: userResponse.condition?.loginStreakDays || 0,
+        referralCount: userResponse.condition?.referralCount || 0,
+      },
+      inventory: {
+        point: userResponse.inventory?.point || 0,
+        coupons: userResponse.inventory?.coupons || [],
+        items: userResponse.inventory?.items || [],
+      },
+    };
+  }
+
+  /**
    * 유저를 활성화합니다.
    */
-  @Roles(Role.ADMIN)
-  @ApiSecurity(Role.ADMIN)
+  @Roles(Role.OPERATOR)
+  @ApiSecurity({ allowed: [Role.OPERATOR] })
   @Patch(":userId/activate")
   async activateUser(@Param("userId") userId: string): Promise<UserDto> {
     const activateUserObservable = this.userService.activateUser({ userId });
@@ -81,7 +115,7 @@ export class UserController {
    * 유저의 역할을 변경합니다.
    */
   @Roles(Role.ADMIN)
-  @ApiSecurity(Role.ADMIN)
+  @ApiSecurity({ allowed: [Role.ADMIN] })
   @Patch(":userId/role")
   async assignRole(
     @Param("userId") userId: string,

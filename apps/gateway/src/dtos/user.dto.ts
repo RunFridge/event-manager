@@ -16,6 +16,19 @@ export class UserConditionDto {
   referralCount: number;
 }
 
+export class UserInventoryDto {
+  @IsInt()
+  point: number;
+
+  @IsArray()
+  @IsString({ each: true })
+  coupons: string[];
+
+  @IsArray()
+  @IsString({ each: true })
+  items: string[];
+}
+
 export class UserDto {
   @IsString()
   id: string;
@@ -39,6 +52,7 @@ export class UserDto {
   lastLoginAt?: Date;
 
   condition?: UserConditionDto;
+  inventory?: UserInventoryDto;
 }
 
 export class UserListDto implements Omit<UserListResponse, "list"> {

@@ -86,7 +86,7 @@ message Condition {
 }
 
 message Inventory {
-    int32 points = 1;
+    int32 point = 1;
     repeated string coupons = 2;
     repeated string items = 3;
 }

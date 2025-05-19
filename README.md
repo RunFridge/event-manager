@@ -4,14 +4,16 @@
 
 ## 시스템 구조
 
-이벤트 보상 관리 시스템은 MSA 아키텍처로 구성되어 있습니다. 각 서비스는 독립적으로 배포 및 운영되며, gRPC를 통해 통신합니다.
+이벤트 보상 관리 시스템은 MSA 아키텍처로 구성되어 있습니다.
+
+각 서비스는 독립적으로 배포 및 운영되며, gRPC를 통해 통신합니다.
 
 ```mermaid
 flowchart TD
-	gateway[["GATEWAY"]]
-    auth[["AUTH"]]
-    event[["EVENT"]]
-    db[("DATABASE")]
+	gateway[["Gateway Service"]]
+    auth[["Auth Service"]]
+    event[["Event Service"]]
+    db[("MongoDB")]
 
     gateway -->|gRPC| auth
     gateway -->|gRPC| event
@@ -21,7 +23,7 @@ flowchart TD
 
 ## 기술 스택
 
-- NestJS
+- NestJS (MSA)
 - MongoDB
 - gRPC / Protobuf
 - Swagger
@@ -110,6 +112,7 @@ interface EventSchema {
 ## API 엔드 포인트
 
 OpenAPI spec을 사용한 [@nestjs/swagger](https://docs.nestjs.com/openapi/introduction)를 사용하여 API 상세한 문서를 제공합니다.
+
 상세한 문서는 실행 후 http://localhost:${PORT}/docs 에서 확인할 수 있습니다.
 
 > Checkbox는 구현이 완료된 API입니다.

@@ -37,6 +37,9 @@ docker compose up -d
 
 6. Swagger 문서 참조 [http://localhost:3000/docs]
 
+> [!TIP]
+> 현재 편의를 위해서 register로 사용자 생성시 "admin"으로 생성되도록 설정되어있습니다.
+
 ## 시스템 구조
 
 이벤트 보상 관리 시스템은 MSA 아키텍처로 구성되어 있습니다.
@@ -79,7 +82,8 @@ flowchart TD
 
 MongoDB를 사용하여 이벤트 및 보상 정보를 저장합니다.
 
-> 초기 모델링
+> [!NOTE]
+> 모델링 초안으로 코드와 약간 다름
 
 ```ts
 // user.schema.ts

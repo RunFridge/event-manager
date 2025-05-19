@@ -45,11 +45,16 @@ docker compose up -d
 
 ```mermaid
 flowchart TD
-	gateway[["Gateway Service"]]
-    auth[["Auth Service"]]
-    event[["Event Service"]]
-    db[("MongoDB")]
+	public[["Public"]]
+	gateway[["GATEWAY"]]
 
+	subgraph internal
+    auth[["AUTH"]]
+    event[["EVENT"]]
+    db[("DATABASE")]
+    end
+
+	public -->|HTTP| gateway
     gateway -->|gRPC| auth
     gateway -->|gRPC| event
     auth --> db

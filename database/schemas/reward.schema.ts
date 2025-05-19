@@ -7,7 +7,7 @@ export interface RewardDocument extends Document {
   type: "point" | "coupon" | "item";
   title: string;
   description?: string;
-  points?: number;
+  point?: number;
   coupons?: string[];
   items?: string[];
   active: boolean;
@@ -24,7 +24,7 @@ export const RewardSchema = new Schema<RewardDocument>(
     },
     title: String,
     description: String,
-    points: {
+    point: {
       type: Number,
       required: function () {
         return this.type === "point";

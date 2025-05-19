@@ -125,19 +125,15 @@ interface EventSchema {
 
 - 생일 이벤트
 
-  - 사용자의 생일을 축하하는 이벤트입니다.
-  - EventService에서 매일 0시에 사용자의 생일을 확인하여 보상을 지급합니다.
+  - 사용자의 생일을 축하하는 이벤트
 
 - 로그인 이벤트
 
-  - 사용자가 로그인할 때마다 보상을 지급하는 이벤트입니다.
-  - AuthService에서 사용자가 로그인할 때마다 `loginStreakDays`를 확인하여 보상을 지급합니다.
+  - AuthService에서 사용자가 로그인할 때마다 `loginStreakDays`를 확인하여 보상 지급 조건을 충족
 
 - 초대 이벤트
 
-  - 사용자가 친구를 초대할 때마다 보상을 지급하는 이벤트입니다.
-  - AuthService에서 신규 사용자가 가입할 때마다 추천인 정보를 확인해 `invitationCount`에 따라 보상을 지급합니다.
-
+  - AuthService에서 신규 사용자가 가입할 때마다 추천인 정보를 확인해 `invitationCount`에 따라 보상 지급 조건을 충족
 
 ## API 엔드 포인트
 
@@ -180,15 +176,31 @@ OpenAPI spec을 사용한 [@nestjs/swagger](https://docs.nestjs.com/openapi/intr
 - [ ] **[GET]** /event : 이벤트 목록 조회 (ADMIN | OPERATOR | AUDITOR)
 - [ ] **[GET]** /event/{id} : 이벤트 상세 조회 (ADMIN | OPERATOR | AUDITOR)
 - [ ] **[PUT]** /event/{id} : 이벤트 수정 (ADMIN | OPERATOR)
+- [ ] **[DELETE]** /event/{id} : 이벤트 삭제 (ADMIN | OPERATOR)
 
 ### 보상 관련
 
-- [ ] **[POST]** /event/{eventId}/reward : 보상 목록 생성 (ADMIN | OPERATOR)
-- [ ] **[GET]** /event/{eventId}/reward : 보상 목록 조회 (ADMIN | OPERATOR | AUDITOR)
-- [ ] **[PUT]** /event/{eventId}/reward : 보상 목록 수정 (ADMIN | OPERATOR)
+- [ ] **[POST]** /reward : 보상 생성 (ADMIN | OPERATOR)
+- [ ] **[GET]** /reward : 보상 목록 조회 (ADMIN | OPERATOR | AUDITOR)
+- [ ] **[PUT]** /reward/{id} : 보상 목록 수정 (ADMIN | OPERATOR)
+- [ ] **[DELETE]** /reward/{id} : 보상 삭제 (ADMIN | OPERATOR)
 
 ### 사용자 및 보상 관련
 
-- [ ] **[GET]** /me : 사용자 정보 조회 (USER)
-- [ ] **[GET]** /me/rewards : 보상 지급 목록 조회 (USER)
-- [ ] **[POST]** /me/rewards/{rewardId}/claim : 보상 지급 (USER)
+- [ ] **[GET]** /client : 사용자 정보 조회 (USER)
+- [ ] **[GET]** /client/event : 활성 이벤트 목록 조회 (USER)
+- [ ] **[GET]** /client/reward : 사용자 보상 지급 목록 조회 (USER)
+- [ ] **[POST]** /client/event/{id}/claim : 이벤트 보상 지급 요청 (USER)
+
+### 지급 이력 관리
+
+- [ ] **[GET]** /reward/audit : 전체 보상 이력 조회 (ADMIN | OPERATOR | AUDITOR)
+- [ ] **[GET]** /event/{id}/reward/audit : 특정 이벤트의 보상 이력 조회 (ADMIN | OPERATOR | AUDITOR)
+- [ ] **[GET]** /user/{id}/reward/audit : 사용자별 이벤트 보상 이력 조회 (ADMIN | OPERATOR | AUDITOR)
+
+## 추후 개선 방향
+
+- 보상 구체화 (쿠폰, 아이템, 포인트)
+- 오류 메시지 체계화
+- MSA Auto Horizontal Scaling / Load Balancing
+  - Roundrobin

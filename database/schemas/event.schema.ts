@@ -9,6 +9,7 @@ export interface EventDocument extends Document {
   title: string;
   description?: string;
   rewards: RewardDocument[];
+  targetCriteria: number;
   active: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -24,6 +25,7 @@ export const EventSchema = new Schema<EventDocument>(
     title: { type: String, required: true },
     description: String,
     rewards: [RewardSchema],
+    targetCriteria: { type: Number, required: true },
     active: { type: Boolean, default: false },
   },
   { timestamps: true },

@@ -9,6 +9,12 @@ service EventService {
     rpc CreateEvent (CreateEventRequest) returns (CommonResponse);
     rpc UpdateEvent (UpdateEventRequest) returns (CommonResponse);
     rpc DeleteEvent (DeleteEventRequest) returns (CommonResponse);
+    rpc ClaimEventReward (ClaimEventRewardRequest) returns (CommonResponse);
+}
+
+message ClaimEventRewardRequest {
+    string username = 1;
+    string event_id = 2;
 }
 
 message ListEventsRequest {
@@ -26,14 +32,18 @@ message CreateEventRequest {
     string type = 1;
     string title = 2;
     optional string description = 3;
-    repeated string reward_ids = 4;
+    int32 target_criteria = 4;
+    repeated string reward_ids = 5;
 }
 
 message UpdateEventRequest {
     string event_id = 1;
-    string title = 2;
-    optional string description = 3;
-    repeated string reward_ids = 4;
+    string type = 2;
+    string title = 3;
+    bool active = 4;
+    int32 target_criteria = 5;
+    optional string description = 6;
+    repeated string reward_ids = 7;
 }
 
 message DeleteEventRequest {
@@ -62,18 +72,20 @@ message Reward {
     string type = 2;
     string title = 3;
     optional string description = 4;
-    optional int32 points = 5;
+    optional int32 point = 5;
     repeated string coupons = 6;
     repeated string items = 7;
-    optional bool active = 8;
+    bool active = 8;
 }
 
 message EventResponse {
     string event_id = 1;
-    string title = 2;
-    optional string description = 3;
-    repeated Reward rewards = 4;
-    optional bool active = 5;
-    optional google.protobuf.Timestamp created_at = 6;
-    optional google.protobuf.Timestamp updated_at = 7;
+    string type = 2;
+    string title = 3;
+    optional string description = 4;
+    int32 target_criteria = 5;
+    repeated Reward rewards = 6;
+    bool active = 7;
+    google.protobuf.Timestamp created_at = 8;
+    optional google.protobuf.Timestamp updated_at = 9;
 }

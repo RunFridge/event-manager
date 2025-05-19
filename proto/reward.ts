@@ -16,7 +16,7 @@ export interface CreateRewardRequest {
   type: string;
   title: string;
   description?: string | undefined;
-  points?: number | undefined;
+  point?: number | undefined;
   coupons: string[];
   items: string[];
   active?: boolean | undefined;
@@ -27,7 +27,7 @@ export interface UpdateRewardRequest {
   type: string;
   title: string;
   description?: string | undefined;
-  points?: number | undefined;
+  point?: number | undefined;
   coupons: string[];
   items: string[];
   active?: boolean | undefined;
@@ -41,19 +41,6 @@ export interface ListRewardRequest {
   filterType?: string | undefined;
 }
 
-export interface ListUserRewardRequest {
-  page: number;
-  limit: number;
-  total: number;
-  filterClaimed?: boolean | undefined;
-  filterType?: string | undefined;
-}
-
-export interface ClaimRewardRequest {
-  userId: string;
-  userRewardId: string;
-}
-
 export interface ListRewardResponse {
   page: number;
   limit: number;
@@ -63,27 +50,18 @@ export interface ListRewardResponse {
   list: RewardResponse[];
 }
 
-export interface ListUserRewardResponse {
-  page: number;
-  limit: number;
-  total: number;
-  filterClaimed?: boolean | undefined;
-  filterType?: string | undefined;
-  list: RewardResponse[];
-}
-
 export interface CommonResponse {
   result: boolean;
   message?: string | undefined;
-  rewardResponse: RewardResponse | undefined;
+  rewardResponse?: RewardResponse | undefined;
 }
 
 export interface RewardResponse {
   rewardId: string;
   type: string;
   title: string;
-  description: string;
-  points: number;
+  description?: string | undefined;
+  point: number;
   coupons: string[];
   items: string[];
   active: boolean;
@@ -99,10 +77,6 @@ export interface RewardServiceClient {
   updateReward(request: UpdateRewardRequest, metadata?: Metadata): Observable<CommonResponse>;
 
   listReward(request: ListRewardRequest, metadata?: Metadata): Observable<ListRewardResponse>;
-
-  listUserReward(request: ListUserRewardRequest, metadata?: Metadata): Observable<ListUserRewardResponse>;
-
-  claimReward(request: ClaimRewardRequest, metadata?: Metadata): Observable<CommonResponse>;
 }
 
 export interface RewardServiceController {
@@ -120,21 +94,11 @@ export interface RewardServiceController {
     request: ListRewardRequest,
     metadata?: Metadata,
   ): Promise<ListRewardResponse> | Observable<ListRewardResponse> | ListRewardResponse;
-
-  listUserReward(
-    request: ListUserRewardRequest,
-    metadata?: Metadata,
-  ): Promise<ListUserRewardResponse> | Observable<ListUserRewardResponse> | ListUserRewardResponse;
-
-  claimReward(
-    request: ClaimRewardRequest,
-    metadata?: Metadata,
-  ): Promise<CommonResponse> | Observable<CommonResponse> | CommonResponse;
 }
 
 export function RewardServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createReward", "updateReward", "listReward", "listUserReward", "claimReward"];
+    const grpcMethods: string[] = ["createReward", "updateReward", "listReward"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("RewardService", method)(constructor.prototype[method], method, descriptor);

@@ -12,6 +12,11 @@ import { Timestamp } from "../google/protobuf/timestamp";
 
 export const protobufPackage = "event";
 
+export interface ClaimEventRewardRequest {
+  username: string;
+  eventId: string;
+}
+
 export interface ListEventsRequest {
   page: number;
   limit: number;
@@ -27,12 +32,16 @@ export interface CreateEventRequest {
   type: string;
   title: string;
   description?: string | undefined;
+  targetCriteria: number;
   rewardIds: string[];
 }
 
 export interface UpdateEventRequest {
   eventId: string;
+  type: string;
   title: string;
+  active: boolean;
+  targetCriteria: number;
   description?: string | undefined;
   rewardIds: string[];
 }
@@ -61,19 +70,21 @@ export interface Reward {
   type: string;
   title: string;
   description?: string | undefined;
-  points?: number | undefined;
+  point?: number | undefined;
   coupons: string[];
   items: string[];
-  active?: boolean | undefined;
+  active: boolean;
 }
 
 export interface EventResponse {
   eventId: string;
+  type: string;
   title: string;
   description?: string | undefined;
+  targetCriteria: number;
   rewards: Reward[];
-  active?: boolean | undefined;
-  createdAt?: Timestamp | undefined;
+  active: boolean;
+  createdAt: Timestamp | undefined;
   updatedAt?: Timestamp | undefined;
 }
 
@@ -89,6 +100,8 @@ export interface EventServiceClient {
   updateEvent(request: UpdateEventRequest, metadata?: Metadata): Observable<CommonResponse>;
 
   deleteEvent(request: DeleteEventRequest, metadata?: Metadata): Observable<CommonResponse>;
+
+  claimEventReward(request: ClaimEventRewardRequest, metadata?: Metadata): Observable<CommonResponse>;
 }
 
 export interface EventServiceController {
@@ -116,11 +129,23 @@ export interface EventServiceController {
     request: DeleteEventRequest,
     metadata?: Metadata,
   ): Promise<CommonResponse> | Observable<CommonResponse> | CommonResponse;
+
+  claimEventReward(
+    request: ClaimEventRewardRequest,
+    metadata?: Metadata,
+  ): Promise<CommonResponse> | Observable<CommonResponse> | CommonResponse;
 }
 
 export function EventServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["listEvents", "getEvent", "createEvent", "updateEvent", "deleteEvent"];
+    const grpcMethods: string[] = [
+      "listEvents",
+      "getEvent",
+      "createEvent",
+      "updateEvent",
+      "deleteEvent",
+      "claimEventReward",
+    ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("EventService", method)(constructor.prototype[method], method, descriptor);

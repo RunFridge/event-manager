@@ -2,6 +2,12 @@
 
 > 이벤트 보상 관리 시스템
 
+## Prerequisite
+
+- Git 2.49.0
+- Node.js 18.20.8
+- Docker 28.1.1
+
 ## 실행 가이드
 
 1. Clone

@@ -16,6 +16,7 @@ import { UserModule } from "./user/user.module";
 import { APP_GUARD } from "@nestjs/core";
 import { JwtAuthGuard } from "./auth/jwt-auth.guard";
 import { EventModule } from "./event/event.module";
+import { RewardModule } from "./reward/reward.module";
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { EventModule } from "./event/event.module";
     AuthModule,
     UserModule,
     EventModule,
+    RewardModule,
   ],
   controllers: [AppController],
   providers: [

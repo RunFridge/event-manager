@@ -5,10 +5,10 @@ import {
   IsOptional,
   IsString,
 } from "class-validator";
-import { UpdateEventRequest } from "proto/event";
+import { UpdateRewardRequest } from "proto/reward";
 
-export class UpdateEventRequestDto
-  implements Omit<UpdateEventRequest, "eventId">
+export class UpdateRewardRequestDto
+  implements Omit<UpdateRewardRequest, "rewardId">
 {
   @IsString()
   type: string;
@@ -19,14 +19,19 @@ export class UpdateEventRequestDto
   @IsString()
   title: string;
 
-  @IsInt()
-  targetCriteria: number;
-
   @IsString()
   @IsOptional()
   description?: string;
 
   @IsArray()
   @IsString({ each: true })
-  rewardIds: string[];
+  coupons: string[];
+
+  @IsArray()
+  @IsString({ each: true })
+  items: string[];
+
+  @IsOptional()
+  @IsInt()
+  point?: number;
 }

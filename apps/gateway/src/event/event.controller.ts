@@ -11,7 +11,7 @@ import {
 } from "@nestjs/common";
 import { Roles } from "../roles/role.decorator";
 import { Role } from "../roles/role.enum";
-import { ApiSecurity } from "@nestjs/swagger";
+import { ApiSecurity, ApiTags } from "@nestjs/swagger";
 import { CreateEventRequestDto } from "../dtos/create-event-request.dto";
 import { EventListQueryDto } from "../dtos/event-list-query.dto";
 import { UpdateEventRequestDto } from "../dtos/update-event-request.dto";
@@ -21,6 +21,7 @@ import { EventDto, EventListDto } from "../dtos/event.dto";
 import { timestampToDate } from "@utils/date";
 import { CommonResponseDto } from "../dtos/common-response.dto";
 
+@ApiTags("이벤트 관련")
 @Controller("event")
 export class EventController {
   constructor(private readonly eventService: EventService) {}
@@ -119,7 +120,28 @@ export class EventController {
   async updateEvent(
     @Param("eventId") eventId: string,
     @Body() request: UpdateEventRequestDto,
-  ) {}
+  ): Promise<EventDto> {
+    const updateEventObservable = this.eventService.updateEvent({
+      eventId: eventId,
+      ...request,
+    });
+    const { result, message, eventResponse } = await firstValueFrom(
+      updateEventObservable,
+    );
+    if (!result) throw new BadRequestException(message);
+    if (!eventResponse) throw new BadRequestException(message);
+    return {
+      eventId: eventResponse.eventId,
+      active: eventResponse.active,
+      type: eventResponse.type,
+      title: eventResponse.title,
+      description: eventResponse.description,
+      targetCriteria: eventResponse.targetCriteria,
+      rewards: eventResponse.rewards,
+      createdAt: timestampToDate(eventResponse.createdAt!),
+      updatedAt: timestampToDate(eventResponse.updatedAt!),
+    };
+  }
 
   /**
    * 이벤트 삭제

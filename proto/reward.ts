@@ -12,6 +12,10 @@ import { Timestamp } from "../google/protobuf/timestamp";
 
 export const protobufPackage = "reward";
 
+export interface DeleteRewardRequest {
+  rewardId: string;
+}
+
 export interface CreateRewardRequest {
   type: string;
   title: string;
@@ -36,7 +40,6 @@ export interface UpdateRewardRequest {
 export interface ListRewardRequest {
   page: number;
   limit: number;
-  total: number;
   filterActive?: boolean | undefined;
   filterType?: string | undefined;
 }
@@ -77,6 +80,8 @@ export interface RewardServiceClient {
   updateReward(request: UpdateRewardRequest, metadata?: Metadata): Observable<CommonResponse>;
 
   listReward(request: ListRewardRequest, metadata?: Metadata): Observable<ListRewardResponse>;
+
+  deleteReward(request: DeleteRewardRequest, metadata?: Metadata): Observable<CommonResponse>;
 }
 
 export interface RewardServiceController {
@@ -94,11 +99,16 @@ export interface RewardServiceController {
     request: ListRewardRequest,
     metadata?: Metadata,
   ): Promise<ListRewardResponse> | Observable<ListRewardResponse> | ListRewardResponse;
+
+  deleteReward(
+    request: DeleteRewardRequest,
+    metadata?: Metadata,
+  ): Promise<CommonResponse> | Observable<CommonResponse> | CommonResponse;
 }
 
 export function RewardServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createReward", "updateReward", "listReward"];
+    const grpcMethods: string[] = ["createReward", "updateReward", "listReward", "deleteReward"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("RewardService", method)(constructor.prototype[method], method, descriptor);

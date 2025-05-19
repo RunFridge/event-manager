@@ -6,6 +6,7 @@ import { Model } from "mongoose";
 import {
   CommonResponse,
   CreateRewardRequest,
+  DeleteRewardRequest,
   ListRewardRequest,
   ListRewardResponse,
   RewardServiceController,
@@ -89,7 +90,7 @@ export class RewardController implements RewardServiceController {
       },
       { new: true },
     );
-    if (!updatedReward) return { result: false, message: "Event not found" };
+    if (!updatedReward) return { result: false, message: "Reward not found" };
     return {
       result: true,
       rewardResponse: {
@@ -105,5 +106,14 @@ export class RewardController implements RewardServiceController {
         updatedAt: dateToTimestamp(updatedReward.updatedAt),
       },
     };
+  }
+
+  async deleteReward(request: DeleteRewardRequest): Promise<CommonResponse> {
+    const deletedReward = await this.rewardModel.findOneAndDelete(
+      { _id: request.rewardId },
+      { new: true },
+    );
+    if (!deletedReward) return { result: false, message: "Reward not found" };
+    return { result: true, message: "Reward deleted" };
   }
 }

@@ -172,18 +172,18 @@ OpenAPI spec을 사용한 [@nestjs/swagger](https://docs.nestjs.com/openapi/intr
 
 ### 이벤트 관련
 
-- [ ] **[POST]** /event : 이벤트 생성 (ADMIN | OPERATOR)
-- [ ] **[GET]** /event : 이벤트 목록 조회 (ADMIN | OPERATOR | AUDITOR)
-- [ ] **[GET]** /event/{id} : 이벤트 상세 조회 (ADMIN | OPERATOR | AUDITOR)
-- [ ] **[PUT]** /event/{id} : 이벤트 수정 (ADMIN | OPERATOR)
-- [ ] **[DELETE]** /event/{id} : 이벤트 삭제 (ADMIN | OPERATOR)
+- [x] **[POST]** /event : 이벤트 생성 (ADMIN | OPERATOR)
+- [x] **[GET]** /event : 이벤트 목록 조회 (ADMIN | OPERATOR | AUDITOR)
+- [x] **[GET]** /event/{id} : 이벤트 상세 조회 (ADMIN | OPERATOR | AUDITOR)
+- [x] **[PUT]** /event/{id} : 이벤트 수정 (ADMIN | OPERATOR)
+- [x] **[DELETE]** /event/{id} : 이벤트 삭제 (ADMIN | OPERATOR)
 
 ### 보상 관련
 
-- [ ] **[POST]** /reward : 보상 생성 (ADMIN | OPERATOR)
-- [ ] **[GET]** /reward : 보상 목록 조회 (ADMIN | OPERATOR | AUDITOR)
-- [ ] **[PUT]** /reward/{id} : 보상 목록 수정 (ADMIN | OPERATOR)
-- [ ] **[DELETE]** /reward/{id} : 보상 삭제 (ADMIN | OPERATOR)
+- [x] **[POST]** /reward : 보상 생성 (ADMIN | OPERATOR)
+- [x] **[GET]** /reward : 보상 목록 조회 (ADMIN | OPERATOR | AUDITOR)
+- [x] **[PUT]** /reward/{id} : 보상 목록 수정 (ADMIN | OPERATOR)
+- [x] **[DELETE]** /reward/{id} : 보상 삭제 (ADMIN | OPERATOR)
 
 ### 사용자 및 보상 관련
 

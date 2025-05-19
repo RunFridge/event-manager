@@ -1,14 +1,7 @@
-import { IsBoolean, IsInt, IsOptional } from "class-validator";
+import { IsBoolean, IsOptional } from "class-validator";
+import { BaseListQueryDto } from "./base-list-query.dto";
 
-export class UserListQueryDto {
-  @IsInt()
-  @IsOptional()
-  page?: number;
-
-  @IsInt()
-  @IsOptional()
-  limit?: number;
-
+export class UserListQueryDto extends BaseListQueryDto {
   @IsBoolean()
   @IsOptional()
   filterActive?: boolean;

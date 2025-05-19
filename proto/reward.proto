@@ -7,6 +7,11 @@ service RewardService {
     rpc CreateReward (CreateRewardRequest) returns (CommonResponse);
     rpc UpdateReward (UpdateRewardRequest) returns (CommonResponse);
     rpc ListReward (ListRewardRequest) returns (ListRewardResponse);
+    rpc DeleteReward (DeleteRewardRequest) returns (CommonResponse);
+}
+
+message DeleteRewardRequest {
+    string reward_id = 1;
 }
 
 message CreateRewardRequest {
@@ -33,7 +38,6 @@ message UpdateRewardRequest {
 message ListRewardRequest {
     int32 page = 1;
     int32 limit = 2;
-    int32 total = 3;
     optional bool filter_active = 4;
     optional string filter_type = 5;
 }

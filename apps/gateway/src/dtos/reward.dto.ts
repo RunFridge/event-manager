@@ -7,6 +7,7 @@ import {
   IsString,
 } from "class-validator";
 import { Reward } from "proto/event";
+import { ListRewardRequest } from "proto/reward";
 
 export class RewardDto implements Reward {
   @IsString()
@@ -42,4 +43,26 @@ export class RewardDto implements Reward {
 
   @IsDate()
   updatedAt: Date;
+}
+
+export class RewardListDto implements Omit<ListRewardRequest, "list"> {
+  @IsInt()
+  page: number;
+
+  @IsInt()
+  limit: number;
+
+  @IsOptional()
+  @IsBoolean()
+  filterActive?: boolean;
+
+  @IsOptional()
+  @IsString()
+  filterType?: string;
+
+  @IsInt()
+  total: number;
+
+  @IsArray()
+  list: Array<RewardDto>;
 }

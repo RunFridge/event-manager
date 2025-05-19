@@ -3,7 +3,7 @@ import { Provider } from "@nestjs/common";
 import { RewardSchema } from "database/schemas/reward.schema";
 import { Connection } from "mongoose";
 
-export const eventProviders: Provider[] = [
+export const rewardProviders: Provider[] = [
   {
     provide: REWARD_MODEL,
     useFactory: (connection: Connection) =>

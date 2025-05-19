@@ -13,17 +13,14 @@
     "build": "nest build",
     "postbuild": "copyfiles proto/**/*.proto ./dist/proto/",
     "format": "prettier --write \"apps/**/*.ts\" \"constants/**/*.ts\" \"database/**/*.ts\" \"configuration/**/*.ts\"",
-    "start": "nest start",
-    "start:dev": "nest start --watch",
-    "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/apps/gateway/main",
     "lint": "eslint \"{src,apps,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./apps/gateway/test/jest-e2e.json",
-    "proto:gen": "ts-node ./proto/protogen.ts"
+    "proto:gen": "ts-node ./scripts/protogen.ts",
+    "start:dev": "ts-node ./scripts/dev-all.ts"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.13.3",
@@ -65,6 +62,7 @@
     "@types/node": "^22.10.7",
     "@types/passport-jwt": "^4.0.1",
     "@types/supertest": "^6.0.2",
+    "concurrently": "^9.1.2",
     "copyfiles": "^2.4.1",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",

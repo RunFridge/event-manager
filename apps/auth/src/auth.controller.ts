@@ -2,8 +2,8 @@ import { hash, compare } from "bcrypt";
 import { BCRYPT_SALT_ROUNDS } from "@config/env.schema";
 import { USER_MODEL } from "@constants/mongo";
 import {
-  ACCESS_TOKEN_EXPIRES_IN,
-  REFRESH_TOKEN_EXPIRES_IN,
+  ACCESS_TOKEN_EXPIRES_IN_MS,
+  REFRESH_TOKEN_EXPIRES_IN_SECONDS,
 } from "@constants/token";
 import { Controller, Inject, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
@@ -23,7 +23,11 @@ import {
   GetUserRequest,
   TokenRequest,
 } from "proto/auth";
-import { dateToTimestamp, timestampToDate } from "@utils/date";
+import {
+  dateToTimestamp,
+  millisecondsToSeconds,
+  timestampToDate,
+} from "@utils/date";
 import { JwtPayload } from "apps/gateway/src/auth/jwt-payload.interface";
 import { Role, roleFrom } from "apps/gateway/src/roles/role.enum";
 import { hashify } from "@utils/random";
@@ -139,13 +143,13 @@ export class AuthController implements AuthServiceController {
       };
 
       const accessToken = this.jwtService.sign(payload, {
-        expiresIn: ACCESS_TOKEN_EXPIRES_IN,
+        expiresIn: ACCESS_TOKEN_EXPIRES_IN_MS,
       });
       const refreshToken = hashify(user.username + Date.now());
       this.tokenStore.set(
         user.username,
         refreshToken,
-        REFRESH_TOKEN_EXPIRES_IN,
+        REFRESH_TOKEN_EXPIRES_IN_SECONDS,
       );
 
       const lastLoginDate = user.lastLoginAt;
@@ -165,9 +169,11 @@ export class AuthController implements AuthServiceController {
         result: true,
         tokenResponse: {
           accessToken,
-          accessTokenExpiresIn: ACCESS_TOKEN_EXPIRES_IN,
+          accessTokenExpiresIn: millisecondsToSeconds(
+            ACCESS_TOKEN_EXPIRES_IN_MS,
+          ),
           refreshToken,
-          refreshTokenExpiresIn: REFRESH_TOKEN_EXPIRES_IN,
+          refreshTokenExpiresIn: REFRESH_TOKEN_EXPIRES_IN_SECONDS,
         },
       };
     } catch (error: unknown) {
@@ -194,16 +200,16 @@ export class AuthController implements AuthServiceController {
       return { result: false, message: "invalid refresh token" };
     }
     const newAccessToken = this.jwtService.sign(payload, {
-      expiresIn: ACCESS_TOKEN_EXPIRES_IN,
+      expiresIn: ACCESS_TOKEN_EXPIRES_IN_MS,
     });
     const newRefreshToken = hashify(payload.username + Date.now());
     return {
       result: true,
       tokenResponse: {
         accessToken: newAccessToken,
-        accessTokenExpiresIn: ACCESS_TOKEN_EXPIRES_IN,
+        accessTokenExpiresIn: millisecondsToSeconds(ACCESS_TOKEN_EXPIRES_IN_MS),
         refreshToken: newRefreshToken,
-        refreshTokenExpiresIn: REFRESH_TOKEN_EXPIRES_IN,
+        refreshTokenExpiresIn: REFRESH_TOKEN_EXPIRES_IN_SECONDS,
       },
     };
   }

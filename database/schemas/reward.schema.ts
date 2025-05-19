@@ -8,8 +8,8 @@ export interface RewardDocument extends Document {
   title: string;
   description?: string;
   points?: number;
-  coupons?: Types.ObjectId[];
-  items?: Types.ObjectId[];
+  coupons?: string[];
+  items?: string[];
   active: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -31,13 +31,13 @@ export const RewardSchema = new Schema<RewardDocument>(
       },
     },
     coupons: {
-      type: [Types.ObjectId],
+      type: [String],
       required: function () {
         return this.type === "coupon";
       },
     },
     items: {
-      type: [Types.ObjectId],
+      type: [String],
       required: function () {
         return this.type === "item";
       },

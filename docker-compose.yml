@@ -1,0 +1,77 @@
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - nestjs-network
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME:-root}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-password}
+
+  gateway:
+    build:
+      context: .
+      dockerfile: apps/gateway/Dockerfile
+    container_name: gateway-service
+    ports:
+      - "3000:3000"
+    depends_on:
+      - auth
+      - event
+    networks:
+      - nestjs-network
+    environment:
+      - NODE_ENV=production
+      - MONGO_CONNECTION_STRING=mongodb://${MONGO_USERNAME:-root}:${MONGO_PASSWORD:-password}@mongodb:27017/gateway
+      - JWT_SECRET=${JWT_SECRET:-your-jwt-secret}
+      - BCRYPT_SALT_ROUNDS=${BCRYPT_SALT_ROUNDS:-10}
+      - AUTH_SERVICE_URL=auth:3001
+      - EVENT_SERVICE_URL=event:3002
+      - PORT=3000
+
+  auth:
+    build:
+      context: .
+      dockerfile: apps/auth/Dockerfile
+    container_name: auth-service
+    ports:
+      - "4000:4000"
+    depends_on:
+      - mongodb
+    networks:
+      - nestjs-network
+    environment:
+      - NODE_ENV=production
+      - MONGO_CONNECTION_STRING=mongodb://${MONGO_USERNAME:-root}:${MONGO_PASSWORD:-password}@mongodb:27017/auth
+      - JWT_SECRET=${JWT_SECRET:-your-jwt-secret}
+      - BCRYPT_SALT_ROUNDS=${BCRYPT_SALT_ROUNDS:-10}
+      - PORT=3001
+
+  event:
+    build:
+      context: .
+      dockerfile: apps/event/Dockerfile
+    container_name: event-service
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+    networks:
+      - nestjs-network
+    environment:
+      - NODE_ENV=production
+      - MONGO_CONNECTION_STRING=mongodb://${MONGO_USERNAME:-root}:${MONGO_PASSWORD:-password}@mongodb:27017/event
+      - JWT_SECRET=${JWT_SECRET:-your-jwt-secret}
+      - BCRYPT_SALT_ROUNDS=${BCRYPT_SALT_ROUNDS:-10}
+      - PORT=3002
+
+networks:
+  nestjs-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:

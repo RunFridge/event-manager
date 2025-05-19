@@ -52,6 +52,7 @@ export class EventController implements EventServiceController {
   }
 
   async getEvent(request: GetEventRequest): Promise<CommonResponse> {
+    const { eventId } = request;
     return;
   }
 
@@ -60,6 +61,9 @@ export class EventController implements EventServiceController {
   }
 
   async updateEvent(request: UpdateEventRequest): Promise<CommonResponse> {
+    const { eventId, ...updateData } = request;
+    const event = await this.eventModel.findById(eventId);
+    if (!event) return { result: false, message: "Event not found" };
     return;
   }
 

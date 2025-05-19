@@ -20,6 +20,11 @@ flowchart TD
     auth --> db
     event --> db
 ```
+## 인증 방식
+
+- accessToken, refreshToken을 사용하여 JWT 기반 인증을 구현합니다.
+- accessToken은 30분, refreshToken은 하루 동안 유효합니다.
+- refreshToken은 AuthService의 inMemoryCache로 관리합니다.
 
 ## 기술 스택
 
@@ -119,6 +124,7 @@ OpenAPI spec을 사용한 [@nestjs/swagger](https://docs.nestjs.com/openapi/intr
 
 ### 권한 분리
 
+- ALL: 로그인한 모든 사용자
 - ADMIN : 모든 권한을 가진 관리자
 - OPERATOR : 이벤트 생성 및 수정 권한을 가진 운영자
 - AUDITOR : 이벤트 조회 권한을 가진 감사자
@@ -133,6 +139,8 @@ OpenAPI spec을 사용한 [@nestjs/swagger](https://docs.nestjs.com/openapi/intr
 
 - [x] *[POST]* /login : 로그인 (PUBLIC)
 - [x] *[POST]* /register : 회원가입 (PUBLIC)
+- [x] *[POST]* /logout : 로그아웃 (ALL)
+- [x] *[POST]* /refresh-token : refreshToken을 사용하여 accessToken을 재발급합니다. (ALL)
 
 ### 사용자 관련
 

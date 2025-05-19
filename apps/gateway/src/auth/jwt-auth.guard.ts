@@ -29,6 +29,8 @@ export class JwtAuthGuard extends AuthGuard("jwt") {
     ]);
 
     if (requirdRoles) {
+      if (requirdRoles.includes(Role.ALL)) return true;
+
       const req = ctx.switchToHttp().getRequest<Request>();
       const authHeader = req.headers.authorization;
       if (!authHeader) return false;

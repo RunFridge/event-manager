@@ -21,10 +21,13 @@ import {
   UserListResponse,
   RegisterRequest,
   GetUserRequest,
+  TokenRequest,
 } from "proto/auth";
 import { dateToTimestamp, timestampToDate } from "@utils/date";
 import { JwtPayload } from "apps/gateway/src/auth/jwt-payload.interface";
 import { Role, roleFrom } from "apps/gateway/src/roles/role.enum";
+import { hashify } from "@utils/random";
+import { Cache, CACHE_MANAGER } from "@nestjs/cache-manager";
 
 @Controller("auth")
 @AuthServiceControllerMethods()
@@ -33,6 +36,7 @@ export class AuthController implements AuthServiceController {
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
     @Inject(USER_MODEL) private userModel: Model<UserDocument>,
+    @Inject(CACHE_MANAGER) private tokenStore: Cache,
   ) {}
 
   private async hashPassword(password: string): Promise<string> {
@@ -137,6 +141,12 @@ export class AuthController implements AuthServiceController {
       const accessToken = this.jwtService.sign(payload, {
         expiresIn: ACCESS_TOKEN_EXPIRES_IN,
       });
+      const refreshToken = hashify(user.username + Date.now());
+      this.tokenStore.set(
+        refreshToken,
+        user.username,
+        REFRESH_TOKEN_EXPIRES_IN,
+      );
 
       const lastLoginDate = user.lastLoginAt;
       const now = new Date();
@@ -156,7 +166,7 @@ export class AuthController implements AuthServiceController {
         tokenResponse: {
           accessToken,
           accessTokenExpiresIn: ACCESS_TOKEN_EXPIRES_IN,
-          refreshToken: "",
+          refreshToken,
           refreshTokenExpiresIn: REFRESH_TOKEN_EXPIRES_IN,
         },
       };
@@ -167,6 +177,45 @@ export class AuthController implements AuthServiceController {
         message: "Unknown error",
       };
     }
+  }
+
+  async refreshToken(request: TokenRequest): Promise<CommonResponse> {
+    const { accessToken, refreshToken } = request;
+    const tokenStoreUsername = await this.tokenStore.get<string>(refreshToken);
+    if (!tokenStoreUsername)
+      return { result: false, message: "invalid refresh token" };
+    const payload = this.jwtService.verify<JwtPayload>(accessToken, {
+      ignoreExpiration: true,
+    });
+    if (
+      !payload ||
+      !payload.username ||
+      payload.username !== tokenStoreUsername
+    ) {
+      return { result: false, message: "invalid access token" };
+    }
+    const newAccessToken = this.jwtService.sign(payload, {
+      expiresIn: ACCESS_TOKEN_EXPIRES_IN,
+    });
+    const newRefreshToken = hashify(payload.username + Date.now());
+    return {
+      result: true,
+      tokenResponse: {
+        accessToken: newAccessToken,
+        accessTokenExpiresIn: ACCESS_TOKEN_EXPIRES_IN,
+        refreshToken: newRefreshToken,
+        refreshTokenExpiresIn: REFRESH_TOKEN_EXPIRES_IN,
+      },
+    };
+  }
+
+  async revokeToken(request: TokenRequest): Promise<CommonResponse> {
+    const { refreshToken } = request;
+    await this.tokenStore.del(refreshToken);
+    return {
+      result: true,
+      message: "token revoked",
+    };
   }
 
   async assignRole(request: AssignRoleRequest): Promise<CommonResponse> {

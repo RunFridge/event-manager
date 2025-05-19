@@ -1,4 +1,5 @@
 export enum Role {
+  ALL = "all",
   USER = "user",
   OPERATOR = "operator",
   AUDITOR = "auditor",

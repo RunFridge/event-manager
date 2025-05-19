@@ -23,9 +23,10 @@ message GetEventRequest {
 }
 
 message CreateEventRequest {
-    string title = 1;
-    optional string description = 2;
-    repeated string reward_ids = 3;
+    string type = 1;
+    string title = 2;
+    optional string description = 3;
+    repeated string reward_ids = 4;
 }
 
 message UpdateEventRequest {

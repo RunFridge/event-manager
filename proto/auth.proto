@@ -6,10 +6,17 @@ package auth;
 service AuthService {
     rpc Register (RegisterRequest) returns (CommonResponse);
     rpc Login (LoginRequest) returns (CommonResponse);
+    rpc RefreshToken (TokenRequest) returns (CommonResponse);
+    rpc RevokeToken (TokenRequest) returns (CommonResponse);
     rpc ActivateUser (ActivateUserRequest) returns (CommonResponse);
     rpc AssignRole (AssignRoleRequest) returns (CommonResponse);
     rpc ListUsers (ListUserRequest) returns (UserListResponse);
     rpc GetUser (GetUserRequest) returns (CommonResponse);
+}
+
+message TokenRequest {
+    string access_token = 1;
+    string refresh_token = 2;
 }
 
 message GetUserRequest {

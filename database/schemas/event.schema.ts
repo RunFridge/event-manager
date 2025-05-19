@@ -1,6 +1,8 @@
 import { Document, Schema, Types } from "mongoose";
 import { RewardDocument, RewardSchema } from "./reward.schema";
 
+export const VALID_EVENT_TYPES = ["birthday", "login", "invite"] as const;
+
 export interface EventDocument extends Document {
   _id: Types.ObjectId;
   type: "birthday" | "login" | "invite";
@@ -17,7 +19,7 @@ export const EventSchema = new Schema<EventDocument>(
     type: {
       type: String,
       required: true,
-      enum: ["birthday", "login", "invite"],
+      enum: VALID_EVENT_TYPES,
     },
     title: { type: String, required: true },
     description: String,

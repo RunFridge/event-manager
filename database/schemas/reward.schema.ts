@@ -1,5 +1,7 @@
 import { Document, Schema, Types } from "mongoose";
 
+export const VALID_REWARD_TYPES = ["point", "coupon", "item"] as const;
+
 export interface RewardDocument extends Document {
   _id: Types.ObjectId;
   type: "point" | "coupon" | "item";
@@ -18,7 +20,7 @@ export const RewardSchema = new Schema<RewardDocument>(
     type: {
       type: String,
       required: true,
-      enum: ["point", "coupon", "item"],
+      enum: VALID_REWARD_TYPES,
     },
     title: String,
     description: String,

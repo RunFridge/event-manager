@@ -24,6 +24,7 @@ export interface GetEventRequest {
 }
 
 export interface CreateEventRequest {
+  type: string;
   title: string;
   description?: string | undefined;
   rewardIds: string[];

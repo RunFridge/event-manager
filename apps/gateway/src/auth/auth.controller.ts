@@ -1,4 +1,10 @@
-import { BadRequestException, Body, Controller, Post } from "@nestjs/common";
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Headers,
+  Post,
+} from "@nestjs/common";
 import { firstValueFrom } from "rxjs";
 import { timestampToDate } from "@utils/date";
 import { AuthService } from "./auth.service";
@@ -8,6 +14,9 @@ import { ApiTags } from "@nestjs/swagger";
 import { Public } from "./public.decorator";
 import { LoginRequestDto } from "../dtos/login-request.dto";
 import { RegisterRequestDto } from "../dtos/register-request.dto";
+import { Roles } from "../roles/role.decorator";
+import { Role } from "../roles/role.enum";
+import { RefreshTokenRequestDto } from "../dtos/refreh-token-request.dto";
 
 @ApiTags("인증")
 @Controller("auth")
@@ -49,5 +58,51 @@ export class AuthController {
     if (!result) throw new BadRequestException(message);
     if (!tokenResponse) throw new BadRequestException(message);
     return { ...tokenResponse };
+  }
+
+  private parseAuthorizationHeader(authorizationHeader: string) {
+    const [type, accessToken] = authorizationHeader.split(" ");
+    if (type !== "Bearer") {
+      throw new BadRequestException("Invalid authorization header type.");
+    }
+    if (!accessToken) {
+      throw new BadRequestException("Access token is required.");
+    }
+    return accessToken;
+  }
+
+  /**
+   * 토큰을 갱신합니다.
+   */
+  @Roles(Role.ALL)
+  @Post("refresh-token")
+  async refreshToken(
+    @Headers("Authoirzation") authorizationHeader: string,
+    @Body() request: RefreshTokenRequestDto,
+  ): Promise<LoginResponseDto> {
+    const accessToken = this.parseAuthorizationHeader(authorizationHeader);
+    const refreshTokenObservable = this.authService.refreshToken(
+      accessToken,
+      request.refreshToken,
+    );
+    const { result, message, tokenResponse } = await firstValueFrom(
+      refreshTokenObservable,
+    );
+    if (!result) throw new BadRequestException(message);
+    if (!tokenResponse) throw new BadRequestException(message);
+    return { ...tokenResponse };
+  }
+
+  /**
+   * 로그아웃합니다.
+   */
+  @Roles(Role.ALL)
+  @Post("logout")
+  logout(
+    @Headers("Authoirzation") authorizationHeader: string,
+    @Body() request: RefreshTokenRequestDto,
+  ) {
+    const accessToken = this.parseAuthorizationHeader(authorizationHeader);
+    this.authService.logout(accessToken, request.refreshToken);
   }
 }

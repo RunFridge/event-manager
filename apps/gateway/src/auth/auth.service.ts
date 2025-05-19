@@ -35,4 +35,28 @@ export class AuthService implements OnModuleInit {
       }),
     );
   }
+
+  refreshToken(
+    accessToken: string,
+    refreshToken: string,
+  ): Observable<CommonResponse> {
+    return this.authService.refreshToken({ accessToken, refreshToken }).pipe(
+      catchError((error: unknown) => {
+        console.error("Refresh token error: ", error);
+        return throwError(() => error);
+      }),
+    );
+  }
+
+  logout(
+    accessToken: string,
+    refreshToken: string,
+  ): Observable<CommonResponse> {
+    return this.authService.revokeToken({ accessToken, refreshToken }).pipe(
+      catchError((error: unknown) => {
+        console.error("Logout error: ", error);
+        return throwError(() => error);
+      }),
+    );
+  }
 }

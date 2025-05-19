@@ -158,37 +158,37 @@ OpenAPI spec을 사용한 [@nestjs/swagger](https://docs.nestjs.com/openapi/intr
 
 ### 일반
 
-- [x] _[GET]_ /alive : MSA 서버 상태를 확인합니다. (PUBLIC)
+- [x] **[GET]** /alive : MSA 서버 상태를 확인합니다. (PUBLIC)
 
 ### 인증 관련
 
-- [x] _[POST]_ /login : 로그인 (PUBLIC)
-- [x] _[POST]_ /register : 회원가입 (PUBLIC)
-- [x] _[POST]_ /logout : 로그아웃 (ALL)
-- [x] _[POST]_ /refresh-token : refreshToken을 사용하여 accessToken을 재발급합니다. (ALL)
+- [x] **[POST]** /login : 로그인 (PUBLIC)
+- [x] **[POST]** /register : 회원가입 (PUBLIC)
+- [x] **[POST]** /logout : 로그아웃 (ALL)
+- [x] **[POST]** /refresh-token : refreshToken을 사용하여 accessToken을 재발급합니다. (ALL)
 
 ### 사용자 관련
 
-- [x] _[GET]_ /user : 사용자 정보 목록 조회 (ADMIN | OPERATOR | AUDITOR)
-- [x] _[GET]_ /user/{id} : 사용자 정보 상세 조회 (ADMIN | OPERATOR | AUDITOR)
-- [x] _[PATCH]_ /user/{id}/activate : 사용자 활성화 (ADMIN | OPERATOR)
-- [x] _[PATCH]_ /user/{id}/role : 사용자 권한 변경 (ADMIN)
+- [x] **[GET]** /user : 사용자 정보 목록 조회 (ADMIN | OPERATOR | AUDITOR)
+- [x] **[GET]** /user/{id} : 사용자 정보 상세 조회 (ADMIN | OPERATOR | AUDITOR)
+- [x] **[PATCH]** /user/{id}/activate : 사용자 활성화 (ADMIN | OPERATOR)
+- [x] **[PATCH]** /user/{id}/role : 사용자 권한 변경 (ADMIN)
 
 ### 이벤트 관련
 
-- [ ] _[POST]_ /event : 이벤트 생성 (ADMIN | OPERATOR)
-- [ ] _[GET]_ /event : 이벤트 목록 조회 (ADMIN | OPERATOR | AUDITOR)
-- [ ] _[GET]_ /event/{id} : 이벤트 상세 조회 (ADMIN | OPERATOR | AUDITOR)
-- [ ] _[PUT]_ /event/{id} : 이벤트 수정 (ADMIN | OPERATOR)
+- [ ] **[POST]** /event : 이벤트 생성 (ADMIN | OPERATOR)
+- [ ] **[GET]** /event : 이벤트 목록 조회 (ADMIN | OPERATOR | AUDITOR)
+- [ ] **[GET]** /event/{id} : 이벤트 상세 조회 (ADMIN | OPERATOR | AUDITOR)
+- [ ] **[PUT]** /event/{id} : 이벤트 수정 (ADMIN | OPERATOR)
 
 ### 보상 관련
 
-- [ ] _[POST]_ /event/{eventId}/reward : 보상 목록 생성 (ADMIN | OPERATOR)
-- [ ] _[GET]_ /event/{eventId}/reward : 보상 목록 조회 (ADMIN | OPERATOR | AUDITOR)
-- [ ] _[PUT]_ /event/{eventId}/reward : 보상 목록 수정 (ADMIN | OPERATOR)
+- [ ] **[POST]** /event/{eventId}/reward : 보상 목록 생성 (ADMIN | OPERATOR)
+- [ ] **[GET]** /event/{eventId}/reward : 보상 목록 조회 (ADMIN | OPERATOR | AUDITOR)
+- [ ] **[PUT]** /event/{eventId}/reward : 보상 목록 수정 (ADMIN | OPERATOR)
 
 ### 사용자 및 보상 관련
 
-- [ ] _[GET]_ /me : 사용자 정보 조회 (USER)
-- [ ] _[GET]_ /me/rewards : 보상 지급 목록 조회 (USER)
-- [ ] _[POST]_ /me/rewards/{rewardId}/claim : 보상 지급 (USER)
+- [ ] **[GET]** /me : 사용자 정보 조회 (USER)
+- [ ] **[GET]** /me/rewards : 보상 지급 목록 조회 (USER)
+- [ ] **[POST]** /me/rewards/{rewardId}/claim : 보상 지급 (USER)

@@ -10,32 +10,32 @@
 git clone https://github.com/RunFridge/event-manager.git
 ```
 
-2. Install Dependencies
+2. Production으로 Docker Compose 실행
+
+```sh
+docker compose up -d
+```
+
+3. (선택) Install Dependencies
 
 ```sh
 pnpm install --frozen-lockfile
 ```
 
-3. `.env` 설정
+4. (선택) `.env` 설정
 
 ```sh
 # 복사 후 필요 내용 작성
 cp .env.sample .env
 ```
 
-4. 개발 모드로 실행 (선택)
+5. (선택) 개발 모드로 실행
 
 ```sh
 pnpm start:dev
 ```
 
-5. Docker Compose 실행
-
-```sh
-docker compose up -d
-```
-
-6. Swagger 문서 참조 [http://localhost:3000/docs]
+6. Swagger API 문서 참조 [http://localhost:3000/docs]
 
 > [!TIP]
 > 현재 편의를 위해서 register로 사용자 생성시 "admin"으로 생성되도록 설정되어있습니다.

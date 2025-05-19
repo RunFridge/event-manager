@@ -39,6 +39,8 @@ flowchart TD
 
 MongoDB를 사용하여 이벤트 및 보상 정보를 저장합니다.
 
+> 초기 모델링
+
 ```ts
 // user.schema.ts
 interface UserSchema {
@@ -165,25 +167,25 @@ OpenAPI spec을 사용한 [@nestjs/swagger](https://docs.nestjs.com/openapi/intr
 
 ### 사용자 관련
 
-- [x] **[GET]** /user : 사용자 정보 목록 조회 (ADMIN | OPERATOR | AUDITOR)
-- [x] **[GET]** /user/{id} : 사용자 정보 상세 조회 (ADMIN | OPERATOR | AUDITOR)
-- [x] **[PATCH]** /user/{id}/activate : 사용자 활성화 (ADMIN | OPERATOR)
+- [x] **[GET]** /user : 사용자 정보 목록 조회 (OPERATOR)
+- [x] **[GET]** /user/{id} : 사용자 정보 상세 조회 (OPERATOR)
+- [x] **[PATCH]** /user/{id}/toggle-activate : 사용자 활성 상태 토글 (OPERATOR)
 - [x] **[PATCH]** /user/{id}/role : 사용자 권한 변경 (ADMIN)
 
 ### 이벤트 관련
 
-- [x] **[POST]** /event : 이벤트 생성 (ADMIN | OPERATOR)
-- [x] **[GET]** /event : 이벤트 목록 조회 (ADMIN | OPERATOR | AUDITOR)
-- [x] **[GET]** /event/{id} : 이벤트 상세 조회 (ADMIN | OPERATOR | AUDITOR)
-- [x] **[PUT]** /event/{id} : 이벤트 수정 (ADMIN | OPERATOR)
-- [x] **[DELETE]** /event/{id} : 이벤트 삭제 (ADMIN | OPERATOR)
+- [x] **[POST]** /event : 이벤트 생성 (OPERATOR)
+- [x] **[GET]** /event : 이벤트 목록 조회 (OPERATOR)
+- [x] **[GET]** /event/{id} : 이벤트 상세 조회 (OPERATOR)
+- [x] **[PUT]** /event/{id} : 이벤트 수정 (OPERATOR)
+- [x] **[DELETE]** /event/{id} : 이벤트 삭제 (OPERATOR)
 
 ### 보상 관련
 
-- [x] **[POST]** /reward : 보상 생성 (ADMIN | OPERATOR)
-- [x] **[GET]** /reward : 보상 목록 조회 (ADMIN | OPERATOR | AUDITOR)
-- [x] **[PUT]** /reward/{id} : 보상 목록 수정 (ADMIN | OPERATOR)
-- [x] **[DELETE]** /reward/{id} : 보상 삭제 (ADMIN | OPERATOR)
+- [x] **[POST]** /reward : 보상 생성 (OPERATOR)
+- [x] **[GET]** /reward : 보상 목록 조회 (OPERATOR)
+- [x] **[PUT]** /reward/{id} : 보상 목록 수정 (OPERATOR)
+- [x] **[DELETE]** /reward/{id} : 보상 삭제 (OPERATOR)
 
 ### 사용자 및 보상 관련
 
@@ -194,13 +196,13 @@ OpenAPI spec을 사용한 [@nestjs/swagger](https://docs.nestjs.com/openapi/intr
 
 ### 지급 이력 관리
 
-- [ ] **[GET]** /reward/audit : 전체 보상 이력 조회 (ADMIN | OPERATOR | AUDITOR)
-- [ ] **[GET]** /event/{id}/reward/audit : 특정 이벤트의 보상 이력 조회 (ADMIN | OPERATOR | AUDITOR)
-- [ ] **[GET]** /user/{id}/reward/audit : 사용자별 이벤트 보상 이력 조회 (ADMIN | OPERATOR | AUDITOR)
+- [ ] **[GET]** /audit/reward : 전체 보상 이력 조회 (AUDITOR)
 
 ## 추후 개선 방향
 
 - 보상 구체화 (쿠폰, 아이템, 포인트)
+- 불필요한 쿼리 정리
+- 테스트 코드 작성
 - 오류 메시지 체계화
 - MSA Auto Horizontal Scaling / Load Balancing
   - Roundrobin

@@ -27,7 +27,7 @@ export interface ListUserRequest {
   filterActive?: boolean | undefined;
 }
 
-export interface ActivateUserRequest {
+export interface ToggleUserActiveRequest {
   userId: string;
 }
 
@@ -105,7 +105,7 @@ export interface AuthServiceClient {
 
   revokeToken(request: TokenRequest, metadata?: Metadata): Observable<CommonResponse>;
 
-  activateUser(request: ActivateUserRequest, metadata?: Metadata): Observable<CommonResponse>;
+  toggleUserActive(request: ToggleUserActiveRequest, metadata?: Metadata): Observable<CommonResponse>;
 
   assignRole(request: AssignRoleRequest, metadata?: Metadata): Observable<CommonResponse>;
 
@@ -135,8 +135,8 @@ export interface AuthServiceController {
     metadata?: Metadata,
   ): Promise<CommonResponse> | Observable<CommonResponse> | CommonResponse;
 
-  activateUser(
-    request: ActivateUserRequest,
+  toggleUserActive(
+    request: ToggleUserActiveRequest,
     metadata?: Metadata,
   ): Promise<CommonResponse> | Observable<CommonResponse> | CommonResponse;
 
@@ -163,7 +163,7 @@ export function AuthServiceControllerMethods() {
       "login",
       "refreshToken",
       "revokeToken",
-      "activateUser",
+      "toggleUserActive",
       "assignRole",
       "listUsers",
       "getUser",

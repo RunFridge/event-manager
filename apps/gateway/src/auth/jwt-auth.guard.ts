@@ -29,14 +29,14 @@ export class JwtAuthGuard extends AuthGuard("jwt") {
     ]);
 
     if (requirdRoles) {
-      if (requirdRoles.includes(Role.ALL)) return true;
-
       const req = ctx.switchToHttp().getRequest<Request>();
       const authHeader = req.headers.authorization;
       if (!authHeader) return false;
       const [type, token] = authHeader.split(" ");
       if (type !== "Bearer") return false;
       if (!token) return false;
+
+      if (requirdRoles.includes(Role.ALL)) return true;
 
       try {
         const decodedToken = this.jwtService.verify<JwtPayload>(token);

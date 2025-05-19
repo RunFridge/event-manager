@@ -1,13 +1,13 @@
 import { Inject, Injectable, OnModuleInit } from "@nestjs/common";
 import { ClientGrpc } from "@nestjs/microservices";
 import {
-  ActivateUserRequest,
   AssignRoleRequest,
   AUTH_SERVICE_NAME,
   AuthServiceClient,
   CommonResponse,
   GetUserRequest,
   ListUserRequest,
+  ToggleUserActiveRequest,
   UserListResponse,
 } from "proto/auth";
 import { catchError, Observable, throwError } from "rxjs";
@@ -21,8 +21,10 @@ export class UserService implements OnModuleInit {
       this.authClient.getService<AuthServiceClient>(AUTH_SERVICE_NAME);
   }
 
-  activateUser(request: ActivateUserRequest): Observable<CommonResponse> {
-    return this.authService.activateUser(request).pipe(
+  toggleUserActive(
+    request: ToggleUserActiveRequest,
+  ): Observable<CommonResponse> {
+    return this.authService.toggleUserActive(request).pipe(
       catchError((error: unknown) => {
         console.error("Activate user error: ", error);
         return throwError(() => error);

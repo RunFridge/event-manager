@@ -29,8 +29,8 @@ export class RewardController {
   /**
    * 신규 보상 생성
    */
-  @Roles(Role.ADMIN, Role.OPERATOR)
-  @ApiSecurity({ allowed: [Role.ADMIN, Role.OPERATOR] })
+  @Roles(Role.OPERATOR)
+  @ApiSecurity({ allowed: [Role.OPERATOR] })
   @Post()
   async createReward(
     @Body() request: CreateRewardRequestDto,
@@ -58,8 +58,8 @@ export class RewardController {
   /**
    * 보상 수정
    */
-  @Roles(Role.ADMIN, Role.OPERATOR)
-  @ApiSecurity({ allowed: [Role.ADMIN, Role.OPERATOR] })
+  @Roles(Role.OPERATOR)
+  @ApiSecurity({ allowed: [Role.OPERATOR] })
   @Put(":rewardId")
   async updateReward(
     @Param("rewardId") rewardId: string,
@@ -91,8 +91,8 @@ export class RewardController {
   /**
    * 보상 목록 조회
    */
-  @Roles(Role.ADMIN, Role.OPERATOR, Role.AUDITOR)
-  @ApiSecurity({ allowed: [Role.ADMIN, Role.OPERATOR, Role.AUDITOR] })
+  @Roles(Role.OPERATOR)
+  @ApiSecurity({ allowed: [Role.OPERATOR] })
   @Get()
   async listReward(@Query() query: RewardListQueryDto): Promise<RewardListDto> {
     const listRewardsObservable = this.rewardService.listReward({
@@ -126,8 +126,8 @@ export class RewardController {
   /**
    * 보상 삭제
    */
-  @Roles(Role.ADMIN, Role.OPERATOR)
-  @ApiSecurity({ allowed: [Role.ADMIN, Role.OPERATOR] })
+  @Roles(Role.OPERATOR)
+  @ApiSecurity({ allowed: [Role.OPERATOR] })
   @Delete(":rewardId")
   async deleteReward(
     @Param("rewardID") rewardId: string,

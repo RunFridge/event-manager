@@ -11,7 +11,6 @@ import { JwtService } from "@nestjs/jwt";
 import { UserDocument } from "database/schemas/user.schema";
 import { Model } from "mongoose";
 import {
-  ActivateUserRequest,
   AssignRoleRequest,
   LoginRequest,
   AuthServiceController,
@@ -22,6 +21,7 @@ import {
   RegisterRequest,
   GetUserRequest,
   TokenRequest,
+  ToggleUserActiveRequest,
 } from "proto/auth";
 import {
   dateToTimestamp,
@@ -264,10 +264,17 @@ export class AuthController implements AuthServiceController {
     };
   }
 
-  async activateUser(request: ActivateUserRequest): Promise<CommonResponse> {
+  async toggleUserActive(
+    request: ToggleUserActiveRequest,
+  ): Promise<CommonResponse> {
     const updatedUser = await this.userModel.findOneAndUpdate(
       { _id: request.userId },
-      { active: true, updatedAt: new Date() },
+      {
+        $set: {
+          active: { $not: { $eq: "$active" } },
+          updatedAt: new Date(),
+        },
+      },
       { new: true },
     );
     if (!updatedUser) {

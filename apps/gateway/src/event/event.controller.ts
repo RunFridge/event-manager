@@ -29,8 +29,8 @@ export class EventController {
   /**
    * 신규 이벤트 생성
    */
-  @Roles(Role.ADMIN, Role.OPERATOR)
-  @ApiSecurity({ allowed: [Role.ADMIN, Role.OPERATOR] })
+  @Roles(Role.OPERATOR)
+  @ApiSecurity({ allowed: [Role.OPERATOR] })
   @Post()
   async createEvent(@Body() request: CreateEventRequestDto): Promise<EventDto> {
     const createObservable = this.eventService.createEvent(request);
@@ -55,8 +55,8 @@ export class EventController {
   /**
    * 이벤트 목록 조회
    */
-  @Roles(Role.ADMIN, Role.OPERATOR, Role.AUDITOR)
-  @ApiSecurity({ allowed: [Role.ADMIN, Role.OPERATOR, Role.AUDITOR] })
+  @Roles(Role.OPERATOR)
+  @ApiSecurity({ allowed: [Role.OPERATOR] })
   @Get()
   async listEvents(@Query() query: EventListQueryDto): Promise<EventListDto> {
     const listEventsObservable = this.eventService.listEvents({
@@ -89,8 +89,8 @@ export class EventController {
   /**
    * 이벤트 상세 조회
    */
-  @Roles(Role.ADMIN, Role.OPERATOR, Role.AUDITOR)
-  @ApiSecurity({ allowed: [Role.ADMIN, Role.OPERATOR, Role.AUDITOR] })
+  @Roles(Role.OPERATOR)
+  @ApiSecurity({ allowed: [Role.OPERATOR] })
   @Get(":eventId")
   async getEvent(@Param("eventId") eventId: string): Promise<EventDto> {
     const getEventObservable = this.eventService.getEvent({ eventId });
@@ -114,8 +114,8 @@ export class EventController {
   /**
    * 이벤트 수정
    */
-  @Roles(Role.ADMIN, Role.OPERATOR)
-  @ApiSecurity({ allowed: [Role.ADMIN, Role.OPERATOR] })
+  @Roles(Role.OPERATOR)
+  @ApiSecurity({ allowed: [Role.OPERATOR] })
   @Put(":eventId")
   async updateEvent(
     @Param("eventId") eventId: string,
@@ -146,8 +146,8 @@ export class EventController {
   /**
    * 이벤트 삭제
    */
-  @Roles(Role.ADMIN, Role.OPERATOR)
-  @ApiSecurity({ allowed: [Role.ADMIN, Role.OPERATOR] })
+  @Roles(Role.OPERATOR)
+  @ApiSecurity({ allowed: [Role.OPERATOR] })
   @Delete(":eventId")
   async deleteEvent(
     @Param("eventId") eventId: string,

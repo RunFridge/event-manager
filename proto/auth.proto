@@ -8,7 +8,7 @@ service AuthService {
     rpc Login (LoginRequest) returns (CommonResponse);
     rpc RefreshToken (TokenRequest) returns (CommonResponse);
     rpc RevokeToken (TokenRequest) returns (CommonResponse);
-    rpc ActivateUser (ActivateUserRequest) returns (CommonResponse);
+    rpc ToggleUserActive (ToggleUserActiveRequest) returns (CommonResponse);
     rpc AssignRole (AssignRoleRequest) returns (CommonResponse);
     rpc ListUsers (ListUserRequest) returns (UserListResponse);
     rpc GetUser (GetUserRequest) returns (CommonResponse);
@@ -29,7 +29,7 @@ message ListUserRequest {
     optional bool filter_active = 3;
 }
 
-message ActivateUserRequest {
+message ToggleUserActiveRequest {
     string user_id = 1;
 }
 

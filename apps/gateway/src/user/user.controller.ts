@@ -23,8 +23,8 @@ export class UserController {
   /**
    * 사용자 목록을 조회합니다.
    */
-  @Roles(Role.OPERATOR, Role.AUDITOR)
-  @ApiSecurity({ allowed: [Role.OPERATOR, Role.AUDITOR] })
+  @Roles(Role.OPERATOR)
+  @ApiSecurity({ allowed: [Role.OPERATOR] })
   @Get()
   async listUsers(@Query() query: UserListQueryDto): Promise<UserListDto> {
     const listUserObservable = this.userService.listUsers({
@@ -53,8 +53,8 @@ export class UserController {
   /**
    * 사용자 상세 정보를 조회합니다.
    */
-  @Roles(Role.OPERATOR, Role.AUDITOR)
-  @ApiSecurity({ allowed: [Role.OPERATOR, Role.AUDITOR] })
+  @Roles(Role.OPERATOR)
+  @ApiSecurity({ allowed: [Role.OPERATOR] })
   @Get(":userId")
   async getUser(@Param("userId") userId: string): Promise<UserDto> {
     const getUserObservable = this.userService.getUser({ userId });
@@ -85,16 +85,17 @@ export class UserController {
   }
 
   /**
-   * 유저를 활성화합니다.
+   * 유저를 활성 상태를 토글합니다.
    */
   @Roles(Role.OPERATOR)
   @ApiSecurity({ allowed: [Role.OPERATOR] })
-  @Patch(":userId/activate")
+  @Patch(":userId/toggle-activate")
   async activateUser(@Param("userId") userId: string): Promise<UserDto> {
-    const activateUserObservable = this.userService.activateUser({ userId });
-    const { result, message, userResponse } = await firstValueFrom(
-      activateUserObservable,
-    );
+    const toggleObservable = this.userService.toggleUserActive({
+      userId,
+    });
+    const { result, message, userResponse } =
+      await firstValueFrom(toggleObservable);
     if (!result) throw new BadRequestException(message);
     if (!userResponse) throw new BadRequestException(message);
 

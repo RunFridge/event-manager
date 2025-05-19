@@ -1,6 +1,12 @@
-import { EVENT_MODEL, REWARD_MODEL, USER_MODEL } from "@constants/mongo";
+import {
+  AUDIT_MODEL,
+  EVENT_MODEL,
+  REWARD_MODEL,
+  USER_MODEL,
+} from "@constants/mongo";
 import { Controller, Inject } from "@nestjs/common";
 import { dateToTimestamp } from "@utils/date";
+import { AuditDocument } from "database/schemas/audit.schema";
 import { EventDocument } from "database/schemas/event.schema";
 import { RewardDocument } from "database/schemas/reward.schema";
 import { UserDocument } from "database/schemas/user.schema";
@@ -25,6 +31,7 @@ export class EventController implements EventServiceController {
     @Inject(EVENT_MODEL) private eventModel: Model<EventDocument>,
     @Inject(REWARD_MODEL) private rewardModel: Model<RewardDocument>,
     @Inject(USER_MODEL) private userModel: Model<UserDocument>,
+    @Inject(AUDIT_MODEL) private auditModel: Model<AuditDocument>,
   ) {}
 
   async listEvents(request: ListEventsRequest): Promise<ListEventsResponse> {
@@ -216,6 +223,7 @@ export class EventController implements EventServiceController {
   private async giveReward(
     rewards: RewardDocument[],
     userId: Types.ObjectId,
+    eventId: Types.ObjectId,
   ): Promise<boolean> {
     let rewardItems: string[] = [];
     let rewardCoupons: string[] = [];
@@ -242,6 +250,7 @@ export class EventController implements EventServiceController {
           "$inventory.coupons": {
             $each: rewardCoupons,
           },
+          claimedEventIds: eventId,
         },
         $inc: { "$inventory.point": rewardPoints },
       },
@@ -261,6 +270,9 @@ export class EventController implements EventServiceController {
     const event = await this.eventModel.findById(eventId);
     if (!event) return { result: false, message: "event does not exists" };
     if (!event.active) return { result: false, message: "event not active" };
+    if (user.claimedEventIds.map((e) => e.toString()).includes(eventId)) {
+      return { result: false, message: "already claimed" };
+    }
 
     let giveReward = false;
     switch (event.type) {
@@ -276,7 +288,16 @@ export class EventController implements EventServiceController {
           giveReward = true;
         break;
     }
-    if (giveReward) await this.giveReward(event.rewards, user._id);
+    if (giveReward) {
+      await this.giveReward(event.rewards, user._id, event._id);
+      await this.auditModel.create({
+        userId: user._id,
+        username: user.username,
+        eventId: event._id,
+        eventTitle: event.title,
+        claimedRewards: event.rewards,
+      });
+    }
 
     return {
       result: giveReward,

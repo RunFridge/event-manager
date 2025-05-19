@@ -2,6 +2,9 @@
 
 > 이벤트 보상 관리 시스템
 
+## 실행 가이드
+
+
 ## 시스템 구조
 
 이벤트 보상 관리 시스템은 MSA 아키텍처로 구성되어 있습니다.
@@ -189,14 +192,13 @@ OpenAPI spec을 사용한 [@nestjs/swagger](https://docs.nestjs.com/openapi/intr
 
 ### 사용자 및 보상 관련
 
-- [ ] **[GET]** /client : 사용자 정보 조회 (USER)
-- [ ] **[GET]** /client/event : 활성 이벤트 목록 조회 (USER)
-- [ ] **[GET]** /client/reward : 사용자 보상 지급 목록 조회 (USER)
-- [ ] **[POST]** /client/event/{id}/claim : 이벤트 보상 지급 요청 (USER)
+- [x] **[GET]** /client/event : 활성 이벤트 목록 조회 (USER)
+- [x] **[GET]** /client/reward : 사용자 보상 지급 목록 조회 (USER)
+- [x] **[POST]** /client/event/{id}/claim : 이벤트 보상 지급 요청 (USER)
 
 ### 지급 이력 관리
 
-- [ ] **[GET]** /audit/reward : 전체 보상 이력 조회 (AUDITOR)
+- [x] **[GET]** /audit/reward : 전체 보상 이력 조회 (AUDITOR)
 
 ## 추후 개선 방향
 

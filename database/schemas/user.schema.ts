@@ -24,6 +24,7 @@ export interface UserDocument extends Document {
   lastLoginAt?: Date;
   condition: Condition;
   inventory: Inventory;
+  claimedEventIds: Types.ObjectId[];
 }
 
 const ConditionSchema = new Schema(
@@ -57,6 +58,7 @@ export const UserSchema = new Schema<UserDocument>(
     lastLoginAt: { type: Date, required: false },
     condition: { type: ConditionSchema, default: {} },
     inventory: { type: InventorySchema, default: {} },
+    claimedEventIds: [Types.ObjectId],
   },
   { timestamps: true },
 );

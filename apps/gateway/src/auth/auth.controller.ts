@@ -17,6 +17,7 @@ import { RegisterRequestDto } from "../dtos/register-request.dto";
 import { Roles } from "../roles/role.decorator";
 import { Role } from "../roles/role.enum";
 import { RefreshTokenRequestDto } from "../dtos/refreh-token-request.dto";
+import { parseAuthorizationHeader } from "@utils/header";
 
 @ApiTags("인증")
 @Controller("auth")
@@ -60,17 +61,6 @@ export class AuthController {
     return { ...tokenResponse };
   }
 
-  private parseAuthorizationHeader(authorizationHeader: string) {
-    const [type, accessToken] = authorizationHeader.split(" ");
-    if (type !== "Bearer") {
-      throw new BadRequestException("Invalid authorization header type.");
-    }
-    if (!accessToken) {
-      throw new BadRequestException("Access token is required.");
-    }
-    return accessToken;
-  }
-
   /**
    * 토큰을 갱신합니다.
    */
@@ -80,7 +70,7 @@ export class AuthController {
     @Headers("Authoirzation") authorizationHeader: string,
     @Body() request: RefreshTokenRequestDto,
   ): Promise<LoginResponseDto> {
-    const accessToken = this.parseAuthorizationHeader(authorizationHeader);
+    const accessToken = parseAuthorizationHeader(authorizationHeader);
     const refreshTokenObservable = this.authService.refreshToken(
       accessToken,
       request.refreshToken,
@@ -102,7 +92,7 @@ export class AuthController {
     @Headers("Authoirzation") authorizationHeader: string,
     @Body() request: RefreshTokenRequestDto,
   ) {
-    const accessToken = this.parseAuthorizationHeader(authorizationHeader);
+    const accessToken = parseAuthorizationHeader(authorizationHeader);
     this.authService.logout(accessToken, request.refreshToken);
   }
 }

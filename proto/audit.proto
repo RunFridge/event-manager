@@ -1,0 +1,48 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+package audit;
+
+service AuditService {
+    rpc ListAuditRewards (ListAuditRewardsRequest) returns (AuditRewardListResponse);
+}
+
+message ListAuditRewardsRequest {
+    int32 page = 1;
+    int32 limit = 2;
+    optional string filter_username = 3;
+    optional string filter_event_id = 4;
+}
+
+message AuditRewardListResponse {
+    int32 page = 1;
+    int32 limit = 2;
+    int32 total = 3;
+    optional string filter_username = 4;
+    optional string filter_event_id = 5;
+    repeated AuditReward list = 6;
+}
+
+message AuditReward {
+    string audit_id = 1;
+    string user_id = 2;
+    string username = 3;
+    string event_id = 5;
+    string event_title = 6;
+    repeated ClaimedReward claimed_rewards = 7;
+    google.protobuf.Timestamp timestamp = 8;
+}
+
+message ClaimedReward {
+    string reward_id = 1;
+    string type = 2;
+    string title = 3;
+    optional string description = 4;
+    optional int32 point = 5;
+    repeated string coupons = 6;
+    repeated string items = 7;
+    bool active = 8;
+    google.protobuf.Timestamp created_at = 9;
+    google.protobuf.Timestamp updated_at = 10;
+}
+

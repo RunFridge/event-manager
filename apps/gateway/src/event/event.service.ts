@@ -1,6 +1,7 @@
 import { Inject, Injectable, OnModuleInit } from "@nestjs/common";
 import { ClientGrpc } from "@nestjs/microservices";
 import {
+  ClaimEventRewardRequest,
   CommonResponse,
   CreateEventRequest,
   DeleteEventRequest,
@@ -62,6 +63,17 @@ export class EventService implements OnModuleInit {
     return this.eventService.deleteEvent(request).pipe(
       catchError((error: unknown) => {
         console.error("delete event error: ", error);
+        return throwError(() => error);
+      }),
+    );
+  }
+
+  claimEventReward(
+    request: ClaimEventRewardRequest,
+  ): Observable<CommonResponse> {
+    return this.eventService.claimEventReward(request).pipe(
+      catchError((error: unknown) => {
+        console.error("claim event error: ", error);
         return throwError(() => error);
       }),
     );

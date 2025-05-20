@@ -48,6 +48,60 @@ pnpm start:dev
 > [!TIP]
 > 현재 편의를 위해서 register로 사용자 생성시 "admin", "active"으로 생성되도록 설정되어있습니다.
 
+## Sequence
+
+1. 사용자 생성
+
+```mermaid
+sequenceDiagram
+	participant C as Client
+	participant G as Gateway
+	participant A as AuthService
+	participant M as MongoDB
+	C->>G: POST /register
+	activate G
+	G->>A: gRPC
+	A-->>M: Create User
+	A->>G: gRPC
+	deactivate G
+	G->>C: return response
+```
+
+2. 로그인
+
+```mermaid
+sequenceDiagram
+	participant C as Client
+	participant G as Gateway
+	participant A as AuthService
+	participant M as MongoDB
+	C->>G: POST /login
+	activate G
+	G->>A: gRPC
+	A-->>M: Validate User
+	A->>G: gRPC
+	deactivate G
+	G->>C: return token
+```
+
+3. 보상 / 이벤트 생성 
+
+```mermaid
+sequenceDiagram
+	participant C as Client
+	participant G as Gateway
+	participant E as EventService
+	participant M as MongoDB
+	C->>G: POST /reward OR POST /event
+	activate G
+	G->>E: gRPC
+	E-->>M: Create reward / event
+	E->>G: gRPC
+	deactivate G
+	G->>C: return response
+```
+
+
 ## 시스템 구조
 
 이벤트 보상 관리 시스템은 MSA 아키텍처로 구성되어 있습니다.

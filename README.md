@@ -43,7 +43,7 @@ pnpm start:dev
 
 6. Swagger API 문서 참조 [http://localhost:3000/docs]
 
-7. (선택) Postman으로 API 테스트 (OpenAPI spec download)
+7. (선택) Postman으로 API 테스트 [OpenAPI spec download](https://raw.githubusercontent.com/RunFridge/event-manager/refs/heads/main/swagger.json)
 
 > [!TIP]
 > 현재 편의를 위해서 register로 사용자 생성시 "admin"으로 생성되도록 설정되어있습니다.

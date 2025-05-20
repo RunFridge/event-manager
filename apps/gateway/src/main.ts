@@ -1,7 +1,8 @@
+import fs from "fs/promises";
 import { NestFactory } from "@nestjs/core";
 import { ConfigService } from "@nestjs/config";
 import { AppModule } from "./app.module";
-import { ValidationPipe } from "@nestjs/common";
+import { Logger, ValidationPipe } from "@nestjs/common";
 import { GATEWAY_PORT } from "@config/env.schema";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
@@ -18,6 +19,11 @@ async function bootstrap() {
   const documentFactory = () =>
     SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup("docs", app, documentFactory);
+
+  const doc = SwaggerModule.createDocument(app, swaggerConfig);
+  const json = JSON.stringify(doc, null, 2);
+  await fs.writeFile("swagger.json", json, "utf-8");
+  Logger.log("swagger.json created");
 
   await app.listen(config.get<number>(GATEWAY_PORT) ?? 3000);
 }

@@ -1,0 +1,1591 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/alive": {
+      "get": {
+        "operationId": "AppController_checkAlive",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AliveResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "MSA 서버의 상태를 확인합니다.",
+        "tags": [
+          "일반"
+        ]
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "operationId": "AuthController_register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "신규 유저를 등록합니다.\n@description `active` 필드는 기본적으로 false로 등록됩니다.",
+        "tags": [
+          "인증"
+        ]
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "로그인하여 토큰을 받습니다.",
+        "tags": [
+          "인증"
+        ]
+      }
+    },
+    "/auth/refresh-token": {
+      "post": {
+        "operationId": "AuthController_refreshToken",
+        "parameters": [
+          {
+            "name": "Authoirzation",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "토큰을 갱신합니다.",
+        "tags": [
+          "인증"
+        ]
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "operationId": "AuthController_logout",
+        "parameters": [
+          {
+            "name": "Authoirzation",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "로그아웃합니다.",
+        "tags": [
+          "인증"
+        ]
+      }
+    },
+    "/user": {
+      "get": {
+        "operationId": "UserController_listUsers",
+        "parameters": [
+          {
+            "name": "filterActive",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserListDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "allowed": [
+              "operator"
+            ]
+          }
+        ],
+        "summary": "사용자 목록을 조회합니다.",
+        "tags": [
+          "사용자 관리"
+        ]
+      }
+    },
+    "/user/{userId}": {
+      "get": {
+        "operationId": "UserController_getUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "allowed": [
+              "operator"
+            ]
+          }
+        ],
+        "summary": "사용자 상세 정보를 조회합니다.",
+        "tags": [
+          "사용자 관리"
+        ]
+      }
+    },
+    "/user/{userId}/toggle-activate": {
+      "patch": {
+        "operationId": "UserController_activateUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "allowed": [
+              "operator"
+            ]
+          }
+        ],
+        "summary": "유저를 활성 상태를 토글합니다.",
+        "tags": [
+          "사용자 관리"
+        ]
+      }
+    },
+    "/user/{userId}/role": {
+      "patch": {
+        "operationId": "UserController_assignRole",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "role",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "allowed": [
+              "admin"
+            ]
+          }
+        ],
+        "summary": "유저의 역할을 변경합니다.",
+        "tags": [
+          "사용자 관리"
+        ]
+      }
+    },
+    "/event": {
+      "post": {
+        "operationId": "EventController_createEvent",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEventRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "allowed": [
+              "operator"
+            ]
+          }
+        ],
+        "summary": "신규 이벤트 생성",
+        "tags": [
+          "이벤트 관련"
+        ]
+      },
+      "get": {
+        "operationId": "EventController_listEvents",
+        "parameters": [
+          {
+            "name": "filterActive",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "filterType",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventListDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "allowed": [
+              "operator"
+            ]
+          }
+        ],
+        "summary": "이벤트 목록 조회",
+        "tags": [
+          "이벤트 관련"
+        ]
+      }
+    },
+    "/event/{eventId}": {
+      "get": {
+        "operationId": "EventController_getEvent",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "allowed": [
+              "operator"
+            ]
+          }
+        ],
+        "summary": "이벤트 상세 조회",
+        "tags": [
+          "이벤트 관련"
+        ]
+      },
+      "put": {
+        "operationId": "EventController_updateEvent",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEventRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "allowed": [
+              "operator"
+            ]
+          }
+        ],
+        "summary": "이벤트 수정",
+        "tags": [
+          "이벤트 관련"
+        ]
+      },
+      "delete": {
+        "operationId": "EventController_deleteEvent",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "allowed": [
+              "operator"
+            ]
+          }
+        ],
+        "summary": "이벤트 삭제",
+        "tags": [
+          "이벤트 관련"
+        ]
+      }
+    },
+    "/reward": {
+      "post": {
+        "operationId": "RewardController_createReward",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRewardRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RewardDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "allowed": [
+              "operator"
+            ]
+          }
+        ],
+        "summary": "신규 보상 생성",
+        "tags": [
+          "보상 관련"
+        ]
+      },
+      "get": {
+        "operationId": "RewardController_listReward",
+        "parameters": [
+          {
+            "name": "filterActive",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "filterType",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RewardListDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "allowed": [
+              "operator"
+            ]
+          }
+        ],
+        "summary": "보상 목록 조회",
+        "tags": [
+          "보상 관련"
+        ]
+      }
+    },
+    "/reward/{rewardId}": {
+      "put": {
+        "operationId": "RewardController_updateReward",
+        "parameters": [
+          {
+            "name": "rewardId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRewardRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RewardDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "allowed": [
+              "operator"
+            ]
+          }
+        ],
+        "summary": "보상 수정",
+        "tags": [
+          "보상 관련"
+        ]
+      },
+      "delete": {
+        "operationId": "RewardController_deleteReward",
+        "parameters": [
+          {
+            "name": "rewardID",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "allowed": [
+              "operator"
+            ]
+          }
+        ],
+        "summary": "보상 삭제",
+        "tags": [
+          "보상 관련"
+        ]
+      }
+    },
+    "/client/event/{eventId}/claim": {
+      "post": {
+        "operationId": "ClientController_claimEventReward",
+        "parameters": [
+          {
+            "name": "Authoirzation",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "allowed": [
+              "user"
+            ]
+          }
+        ],
+        "summary": "이벤트 보상 지급 요청",
+        "tags": [
+          "사용자 보상 관련"
+        ]
+      }
+    },
+    "/client/reward": {
+      "get": {
+        "operationId": "ClientController_listRewardHistory",
+        "parameters": [
+          {
+            "name": "Authoirzation",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filterUsername",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filterEventId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditListDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "allowed": [
+              "user"
+            ]
+          }
+        ],
+        "summary": "사용자 보상 지급 목록 조회",
+        "tags": [
+          "사용자 보상 관련"
+        ]
+      }
+    },
+    "/client/event": {
+      "get": {
+        "operationId": "ClientController_listActiveEvents",
+        "parameters": [
+          {
+            "name": "filterActive",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "filterType",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventListDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "allowed": [
+              "user"
+            ]
+          }
+        ],
+        "summary": "진행중 이벤트 목록 조회",
+        "tags": [
+          "사용자 보상 관련"
+        ]
+      }
+    },
+    "/audit/reward": {
+      "get": {
+        "operationId": "AuditController_listRewardAudit",
+        "parameters": [
+          {
+            "name": "filterUsername",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filterEventId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditListDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "allowed": [
+              "auditor"
+            ]
+          }
+        ],
+        "summary": "보상 이력 조회 (감사)",
+        "tags": [
+          "감사 관리"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Event Manager",
+    "description": "이벤트/보상 관리 시스템",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "AliveResponseDto": {
+        "type": "object",
+        "properties": {
+          "authServer": {
+            "type": "boolean"
+          },
+          "eventServer": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "authServer",
+          "eventServer"
+        ]
+      },
+      "RegisterRequestDto": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "username",
+          "password"
+        ]
+      },
+      "UserConditionDto": {
+        "type": "object",
+        "properties": {
+          "loginStreakDays": {
+            "type": "number"
+          },
+          "referralCount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "loginStreakDays",
+          "referralCount"
+        ]
+      },
+      "UserInventoryDto": {
+        "type": "object",
+        "properties": {
+          "point": {
+            "type": "number"
+          },
+          "coupons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "point",
+          "coupons",
+          "items"
+        ]
+      },
+      "UserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "lastLoginAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "condition": {
+            "$ref": "#/components/schemas/UserConditionDto"
+          },
+          "inventory": {
+            "$ref": "#/components/schemas/UserInventoryDto"
+          }
+        },
+        "required": [
+          "id",
+          "username",
+          "role",
+          "active",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "LoginRequestDto": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "username",
+          "password"
+        ]
+      },
+      "LoginResponseDto": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string"
+          },
+          "refreshToken": {
+            "type": "string"
+          },
+          "accessTokenExpiresIn": {
+            "type": "number"
+          },
+          "refreshTokenExpiresIn": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "accessToken",
+          "refreshToken",
+          "accessTokenExpiresIn",
+          "refreshTokenExpiresIn"
+        ]
+      },
+      "RefreshTokenRequestDto": {
+        "type": "object",
+        "properties": {
+          "refreshToken": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "refreshToken"
+        ]
+      },
+      "UserListDto": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "number"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "filterActive": {
+            "type": "boolean"
+          },
+          "total": {
+            "type": "number"
+          },
+          "list": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserDto"
+            }
+          }
+        },
+        "required": [
+          "page",
+          "limit",
+          "total",
+          "list"
+        ]
+      },
+      "CreateEventRequestDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "targetCriteria": {
+            "type": "number"
+          },
+          "rewardIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "type",
+          "title",
+          "targetCriteria",
+          "rewardIds"
+        ]
+      },
+      "EventDto": {
+        "type": "object",
+        "properties": {
+          "eventId": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "targetCriteria": {
+            "type": "number"
+          },
+          "rewards": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "eventId",
+          "type",
+          "title",
+          "targetCriteria",
+          "rewards",
+          "active",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "EventListDto": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "number"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "filterActive": {
+            "type": "boolean"
+          },
+          "filterType": {
+            "type": "string"
+          },
+          "total": {
+            "type": "number"
+          },
+          "list": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EventDto"
+            }
+          }
+        },
+        "required": [
+          "page",
+          "limit",
+          "total",
+          "list"
+        ]
+      },
+      "UpdateEventRequestDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "title": {
+            "type": "string"
+          },
+          "targetCriteria": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          },
+          "rewardIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "type",
+          "active",
+          "title",
+          "targetCriteria",
+          "rewardIds"
+        ]
+      },
+      "CommonResponseDto": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ]
+      },
+      "CreateRewardRequestDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "coupons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "point": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "type",
+          "title",
+          "coupons",
+          "items"
+        ]
+      },
+      "RewardDto": {
+        "type": "object",
+        "properties": {
+          "rewardId": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "coupons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "point": {
+            "type": "number"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "rewardId",
+          "type",
+          "title",
+          "coupons",
+          "items",
+          "active",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "UpdateRewardRequestDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "coupons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "point": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "type",
+          "active",
+          "title",
+          "coupons",
+          "items"
+        ]
+      },
+      "RewardListDto": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "number"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "filterActive": {
+            "type": "boolean"
+          },
+          "filterType": {
+            "type": "string"
+          },
+          "total": {
+            "type": "number"
+          },
+          "list": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RewardDto"
+            }
+          }
+        },
+        "required": [
+          "page",
+          "limit",
+          "total",
+          "list"
+        ]
+      },
+      "AuditDto": {
+        "type": "object",
+        "properties": {
+          "auditId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "eventTitle": {
+            "type": "string"
+          },
+          "claimedRewards": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RewardDto"
+            }
+          },
+          "timestamp": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "auditId",
+          "userId",
+          "username",
+          "eventId",
+          "eventTitle",
+          "claimedRewards",
+          "timestamp"
+        ]
+      },
+      "AuditListDto": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "number"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          },
+          "filterUsername": {
+            "type": "string"
+          },
+          "filterEventId": {
+            "type": "string"
+          },
+          "list": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AuditDto"
+            }
+          }
+        },
+        "required": [
+          "page",
+          "limit",
+          "total",
+          "list"
+        ]
+      }
+    }
+  }
+}

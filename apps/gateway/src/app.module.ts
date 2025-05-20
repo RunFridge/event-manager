@@ -3,11 +3,8 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { ConfigurationModule } from "@config/configuration.module";
 import { ClientsModule, Transport } from "@nestjs/microservices";
-import { AUTH_SERVICE_NAME, protobufPackage as authPackage } from "proto/auth";
-import {
-  EVENT_SERVICE_NAME,
-  protobufPackage as eventPackage,
-} from "proto/event";
+import { AUTH_PACKAGE_NAME } from "proto/auth";
+import { EVENT_PACKAGE_NAME } from "proto/event";
 import { DEFAULT_HOST } from "@constants/index";
 import { ConfigService } from "@nestjs/config";
 import { JwtStrategy } from "./auth/jwt.strategy";
@@ -19,6 +16,8 @@ import { EventModule } from "./event/event.module";
 import { RewardModule } from "./reward/reward.module";
 import { ClientModule } from "./client/client.module";
 import { AuditModule } from "./audit/audit.module";
+import { REWARD_PACKAGE_NAME } from "proto/reward";
+import { AUDIT_PACKAGE_NAME } from "proto/audit";
 
 @Module({
   imports: [
@@ -27,7 +26,7 @@ import { AuditModule } from "./audit/audit.module";
       isGlobal: true,
       clients: [
         {
-          name: AUTH_SERVICE_NAME,
+          name: AUTH_PACKAGE_NAME,
           inject: [ConfigService],
           useFactory: (config: ConfigService) => {
             const isProduction = process.env.NODE_ENV === "production";
@@ -36,7 +35,7 @@ import { AuditModule } from "./audit/audit.module";
             return {
               transport: Transport.GRPC,
               options: {
-                package: authPackage,
+                package: AUTH_PACKAGE_NAME,
                 protoPath: "proto/auth.proto",
                 url: `${host}:${authPort}`,
               },
@@ -44,7 +43,7 @@ import { AuditModule } from "./audit/audit.module";
           },
         },
         {
-          name: EVENT_SERVICE_NAME,
+          name: EVENT_PACKAGE_NAME,
           inject: [ConfigService],
           useFactory: (config: ConfigService) => {
             const isProduction = process.env.NODE_ENV === "production";
@@ -53,8 +52,16 @@ import { AuditModule } from "./audit/audit.module";
             return {
               transport: Transport.GRPC,
               options: {
-                package: eventPackage,
-                protoPath: "proto/event.proto",
+                package: [
+                  EVENT_PACKAGE_NAME,
+                  REWARD_PACKAGE_NAME,
+                  AUDIT_PACKAGE_NAME,
+                ],
+                protoPath: [
+                  "proto/event.proto",
+                  "proto/reward.proto",
+                  "proto/audit.proto",
+                ],
                 url: `${host}:${eventPort}`,
               },
             };
@@ -66,8 +73,8 @@ import { AuditModule } from "./audit/audit.module";
     UserModule,
     EventModule,
     RewardModule,
-    ClientModule,
     AuditModule,
+    ClientModule,
   ],
   controllers: [AppController],
   providers: [

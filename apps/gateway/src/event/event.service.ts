@@ -5,6 +5,7 @@ import {
   CommonResponse,
   CreateEventRequest,
   DeleteEventRequest,
+  EVENT_PACKAGE_NAME,
   EVENT_SERVICE_NAME,
   EventServiceClient,
   GetEventRequest,
@@ -17,10 +18,10 @@ import { catchError, Observable, throwError } from "rxjs";
 @Injectable()
 export class EventService implements OnModuleInit {
   private eventService: EventServiceClient;
-  constructor(@Inject(EVENT_SERVICE_NAME) private eventClient: ClientGrpc) {}
+  constructor(@Inject(EVENT_PACKAGE_NAME) private client: ClientGrpc) {}
   onModuleInit() {
     this.eventService =
-      this.eventClient.getService<EventServiceClient>(EVENT_SERVICE_NAME);
+      this.client.getService<EventServiceClient>(EVENT_SERVICE_NAME);
   }
 
   createEvent(request: CreateEventRequest): Observable<CommonResponse> {

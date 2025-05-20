@@ -2,6 +2,7 @@ import { Inject, Injectable, OnModuleInit } from "@nestjs/common";
 import { ClientGrpc } from "@nestjs/microservices";
 import { catchError, Observable, throwError } from "rxjs";
 import {
+  AUTH_PACKAGE_NAME,
   AUTH_SERVICE_NAME,
   AuthServiceClient,
   CommonResponse,
@@ -12,10 +13,10 @@ import {
 @Injectable()
 export class AuthService implements OnModuleInit {
   private authService: AuthServiceClient;
-  constructor(@Inject(AUTH_SERVICE_NAME) private authClient: ClientGrpc) {}
+  constructor(@Inject(AUTH_PACKAGE_NAME) private client: ClientGrpc) {}
   onModuleInit() {
     this.authService =
-      this.authClient.getService<AuthServiceClient>(AUTH_SERVICE_NAME);
+      this.client.getService<AuthServiceClient>(AUTH_SERVICE_NAME);
   }
 
   register(request: RegisterRequest): Observable<CommonResponse> {

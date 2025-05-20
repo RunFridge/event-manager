@@ -171,6 +171,7 @@
             "required": false,
             "in": "query",
             "schema": {
+              "example": false,
               "type": "boolean"
             }
           },
@@ -180,6 +181,7 @@
             "in": "query",
             "schema": {
               "default": 1,
+              "example": 1,
               "type": "number"
             }
           },
@@ -189,6 +191,7 @@
             "in": "query",
             "schema": {
               "default": 10,
+              "example": 10,
               "type": "number"
             }
           }
@@ -386,6 +389,7 @@
             "required": false,
             "in": "query",
             "schema": {
+              "example": false,
               "type": "boolean"
             }
           },
@@ -395,6 +399,7 @@
             "in": "query",
             "schema": {
               "default": 1,
+              "example": 1,
               "type": "number"
             }
           },
@@ -404,6 +409,7 @@
             "in": "query",
             "schema": {
               "default": 10,
+              "example": 10,
               "type": "number"
             }
           },
@@ -412,6 +418,7 @@
             "required": false,
             "in": "query",
             "schema": {
+              "example": "login",
               "type": "string"
             }
           }
@@ -607,6 +614,7 @@
             "required": false,
             "in": "query",
             "schema": {
+              "example": false,
               "type": "boolean"
             }
           },
@@ -616,6 +624,7 @@
             "in": "query",
             "schema": {
               "default": 1,
+              "example": 1,
               "type": "number"
             }
           },
@@ -625,6 +634,7 @@
             "in": "query",
             "schema": {
               "default": 10,
+              "example": 10,
               "type": "number"
             }
           },
@@ -633,6 +643,7 @@
             "required": false,
             "in": "query",
             "schema": {
+              "example": "login",
               "type": "string"
             }
           }
@@ -746,6 +757,74 @@
         ]
       }
     },
+    "/audit/reward": {
+      "get": {
+        "operationId": "AuditController_listRewardAudit",
+        "parameters": [
+          {
+            "name": "filterUsername",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "test@test.com",
+              "type": "string"
+            }
+          },
+          {
+            "name": "filterEventId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditListDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "allowed": [
+              "auditor"
+            ]
+          }
+        ],
+        "summary": "보상 이력 조회 (감사)",
+        "tags": [
+          "감사 관리"
+        ]
+      }
+    },
     "/client/event/{eventId}/claim": {
       "post": {
         "operationId": "ClientController_claimEventReward",
@@ -809,6 +888,7 @@
             "required": false,
             "in": "query",
             "schema": {
+              "example": "test@test.com",
               "type": "string"
             }
           },
@@ -817,6 +897,7 @@
             "required": false,
             "in": "query",
             "schema": {
+              "example": "507f1f77bcf86cd799439011",
               "type": "string"
             }
           },
@@ -826,6 +907,7 @@
             "in": "query",
             "schema": {
               "default": 1,
+              "example": 1,
               "type": "number"
             }
           },
@@ -835,6 +917,7 @@
             "in": "query",
             "schema": {
               "default": 10,
+              "example": 10,
               "type": "number"
             }
           }
@@ -873,6 +956,7 @@
             "required": false,
             "in": "query",
             "schema": {
+              "example": false,
               "type": "boolean"
             }
           },
@@ -882,6 +966,7 @@
             "in": "query",
             "schema": {
               "default": 1,
+              "example": 1,
               "type": "number"
             }
           },
@@ -891,6 +976,7 @@
             "in": "query",
             "schema": {
               "default": 10,
+              "example": 10,
               "type": "number"
             }
           },
@@ -899,6 +985,7 @@
             "required": false,
             "in": "query",
             "schema": {
+              "example": "login",
               "type": "string"
             }
           }
@@ -925,70 +1012,6 @@
         "summary": "진행중 이벤트 목록 조회",
         "tags": [
           "사용자 보상 관련"
-        ]
-      }
-    },
-    "/audit/reward": {
-      "get": {
-        "operationId": "AuditController_listRewardAudit",
-        "parameters": [
-          {
-            "name": "filterUsername",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "filterEventId",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "default": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "default": 10,
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AuditListDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "allowed": [
-              "auditor"
-            ]
-          }
-        ],
-        "summary": "보상 이력 조회 (감사)",
-        "tags": [
-          "감사 관리"
         ]
       }
     }
@@ -1029,10 +1052,16 @@
         "type": "object",
         "properties": {
           "username": {
-            "type": "string"
+            "type": "string",
+            "example": "test@test.com"
           },
           "password": {
-            "type": "string"
+            "type": "string",
+            "example": "test1234"
+          },
+          "referral": {
+            "type": "string",
+            "example": "test@test.com"
           }
         },
         "required": [
@@ -1127,10 +1156,12 @@
         "type": "object",
         "properties": {
           "username": {
-            "type": "string"
+            "type": "string",
+            "example": "test@test.com"
           },
           "password": {
-            "type": "string"
+            "type": "string",
+            "example": "test1234"
           }
         },
         "required": [
@@ -1205,18 +1236,23 @@
         "type": "object",
         "properties": {
           "type": {
-            "type": "string"
+            "type": "string",
+            "example": "login"
           },
           "title": {
-            "type": "string"
+            "type": "string",
+            "example": "연속 로그인 이벤트"
           },
           "description": {
-            "type": "string"
+            "type": "string",
+            "example": "10일 연속 로그인 시 1000 포인트 지급"
           },
           "targetCriteria": {
-            "type": "number"
+            "type": "number",
+            "example": 10
           },
           "rewardIds": {
+            "example": "[507f1f77bcf86cd799439011]",
             "type": "array",
             "items": {
               "type": "string"
@@ -1313,21 +1349,27 @@
         "type": "object",
         "properties": {
           "type": {
-            "type": "string"
+            "type": "string",
+            "example": "birthday"
           },
           "active": {
-            "type": "boolean"
+            "type": "boolean",
+            "example": true
           },
           "title": {
-            "type": "string"
+            "type": "string",
+            "example": "생일 이벤트"
           },
           "targetCriteria": {
-            "type": "number"
+            "type": "number",
+            "example": 0
           },
           "description": {
-            "type": "string"
+            "type": "string",
+            "example": "생일 이벤트입니다."
           },
           "rewardIds": {
+            "example": "[507f1f77bcf86cd799439011]",
             "type": "array",
             "items": {
               "type": "string"
@@ -1360,28 +1402,34 @@
         "type": "object",
         "properties": {
           "type": {
-            "type": "string"
+            "type": "string",
+            "example": "point"
           },
           "title": {
-            "type": "string"
+            "type": "string",
+            "example": "포인트 보상"
           },
           "description": {
-            "type": "string"
+            "type": "string",
+            "example": "1000 포인트 지급"
           },
           "coupons": {
+            "example": [],
             "type": "array",
             "items": {
               "type": "string"
             }
           },
           "items": {
+            "example": [],
             "type": "array",
             "items": {
               "type": "string"
             }
           },
           "point": {
-            "type": "number"
+            "type": "number",
+            "example": 1000
           }
         },
         "required": [
@@ -1448,31 +1496,42 @@
         "type": "object",
         "properties": {
           "type": {
-            "type": "string"
+            "type": "string",
+            "example": "item"
           },
           "active": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "*",
+            "example": true
           },
           "title": {
-            "type": "string"
+            "type": "string",
+            "example": "아이템 보상"
           },
           "description": {
-            "type": "string"
+            "type": "string",
+            "example": "무기 보상"
           },
           "coupons": {
+            "example": [],
             "type": "array",
             "items": {
               "type": "string"
             }
           },
           "items": {
+            "example": [
+              "sword",
+              "bow"
+            ],
             "type": "array",
             "items": {
               "type": "string"
             }
           },
           "point": {
-            "type": "number"
+            "type": "number",
+            "example": 0
           }
         },
         "required": [

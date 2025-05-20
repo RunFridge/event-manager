@@ -3,8 +3,10 @@ import { EventModule } from "./event.module";
 import { MicroserviceOptions, Transport } from "@nestjs/microservices";
 import { ReflectionService } from "@grpc/reflection";
 import { HealthImplementation } from "grpc-health-check";
-import { protobufPackage } from "proto/event";
 import { DEFAULT_HOST, EVENT_DEFAULT_PORT } from "@constants/index";
+import { EVENT_PACKAGE_NAME } from "proto/event";
+import { AUDIT_PACKAGE_NAME } from "proto/audit";
+import { REWARD_PACKAGE_NAME } from "proto/reward";
 import type { PackageDefinition } from "@grpc/proto-loader";
 import type { Server } from "@grpc/grpc-js";
 
@@ -15,8 +17,12 @@ async function bootstrap() {
     {
       transport: Transport.GRPC,
       options: {
-        package: protobufPackage,
-        protoPath: "proto/event.proto",
+        package: [EVENT_PACKAGE_NAME, REWARD_PACKAGE_NAME, AUDIT_PACKAGE_NAME],
+        protoPath: [
+          "proto/event.proto",
+          "proto/reward.proto",
+          "proto/audit.proto",
+        ],
         url: `${DEFAULT_HOST}:${PORT}`,
         onLoadPackageDefinition: (pkg: PackageDefinition, server: Server) => {
           const healthImpl = new HealthImplementation({ "": "UNKNOWN" });

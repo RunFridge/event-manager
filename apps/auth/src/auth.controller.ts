@@ -2,8 +2,8 @@ import { hash, compare } from "bcrypt";
 import { BCRYPT_SALT_ROUNDS } from "@config/env.schema";
 import { USER_MODEL } from "@constants/mongo";
 import {
-  ACCESS_TOKEN_EXPIRES_IN_MS,
-  REFRESH_TOKEN_EXPIRES_IN_SECONDS,
+  ACCESS_TOKEN_EXPIRES_IN_SECONDS,
+  REFRESH_TOKEN_EXPIRES_IN_MS,
 } from "@constants/token";
 import { Controller, Inject, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
@@ -143,13 +143,13 @@ export class AuthController implements AuthServiceController {
       };
 
       const accessToken = this.jwtService.sign(payload, {
-        expiresIn: ACCESS_TOKEN_EXPIRES_IN_MS,
+        expiresIn: ACCESS_TOKEN_EXPIRES_IN_SECONDS,
       });
       const refreshToken = hashify(user.username + Date.now());
       this.tokenStore.set(
         user.username,
         refreshToken,
-        REFRESH_TOKEN_EXPIRES_IN_SECONDS,
+        REFRESH_TOKEN_EXPIRES_IN_MS,
       );
 
       const lastLoginDate = user.lastLoginAt;
@@ -169,11 +169,11 @@ export class AuthController implements AuthServiceController {
         result: true,
         tokenResponse: {
           accessToken,
-          accessTokenExpiresIn: millisecondsToSeconds(
-            ACCESS_TOKEN_EXPIRES_IN_MS,
-          ),
+          accessTokenExpiresIn: ACCESS_TOKEN_EXPIRES_IN_SECONDS,
           refreshToken,
-          refreshTokenExpiresIn: REFRESH_TOKEN_EXPIRES_IN_SECONDS,
+          refreshTokenExpiresIn: millisecondsToSeconds(
+            REFRESH_TOKEN_EXPIRES_IN_MS,
+          ),
         },
       };
     } catch (error: unknown) {
@@ -200,16 +200,18 @@ export class AuthController implements AuthServiceController {
       return { result: false, message: "invalid refresh token" };
     }
     const newAccessToken = this.jwtService.sign(payload, {
-      expiresIn: ACCESS_TOKEN_EXPIRES_IN_MS,
+      expiresIn: ACCESS_TOKEN_EXPIRES_IN_SECONDS,
     });
     const newRefreshToken = hashify(payload.username + Date.now());
     return {
       result: true,
       tokenResponse: {
         accessToken: newAccessToken,
-        accessTokenExpiresIn: millisecondsToSeconds(ACCESS_TOKEN_EXPIRES_IN_MS),
+        accessTokenExpiresIn: ACCESS_TOKEN_EXPIRES_IN_SECONDS,
         refreshToken: newRefreshToken,
-        refreshTokenExpiresIn: REFRESH_TOKEN_EXPIRES_IN_SECONDS,
+        refreshTokenExpiresIn: millisecondsToSeconds(
+          REFRESH_TOKEN_EXPIRES_IN_MS,
+        ),
       },
     };
   }

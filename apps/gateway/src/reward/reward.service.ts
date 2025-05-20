@@ -1,12 +1,13 @@
 import { Inject, Injectable, OnModuleInit } from "@nestjs/common";
 import { ClientGrpc } from "@nestjs/microservices";
-import { EVENT_SERVICE_NAME } from "proto/event";
+import { EVENT_PACKAGE_NAME } from "proto/event";
 import {
   CommonResponse,
   CreateRewardRequest,
   DeleteRewardRequest,
   ListRewardRequest,
   ListRewardResponse,
+  REWARD_SERVICE_NAME,
   RewardServiceClient,
   UpdateRewardRequest,
 } from "proto/reward";
@@ -15,10 +16,10 @@ import { catchError, Observable, throwError } from "rxjs";
 @Injectable()
 export class RewardService implements OnModuleInit {
   private rewardService: RewardServiceClient;
-  constructor(@Inject(EVENT_SERVICE_NAME) private eventClient: ClientGrpc) {}
+  constructor(@Inject(EVENT_PACKAGE_NAME) private client: ClientGrpc) {}
   onModuleInit() {
     this.rewardService =
-      this.eventClient.getService<RewardServiceClient>(EVENT_SERVICE_NAME);
+      this.client.getService<RewardServiceClient>(REWARD_SERVICE_NAME);
   }
 
   createReward(request: CreateRewardRequest): Observable<CommonResponse> {

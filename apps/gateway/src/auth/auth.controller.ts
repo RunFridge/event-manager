@@ -26,7 +26,7 @@ export class AuthController {
 
   /**
    * 신규 유저를 등록합니다.
-   * @description `active` 필드는 기본적으로 false로 등록됩니다.
+   * @description `active` 필드는 기본적으로 true로 등록됩니다.
    */
   @Public()
   @Post("register")

@@ -63,7 +63,7 @@ export class AuthController implements AuthServiceController {
       username: request.username,
       password: encryptedPassword,
       birthday,
-      active: false,
+      active: true,
       role: "admin",
       condition: {
         loginStreakDays: 0,

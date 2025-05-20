@@ -306,11 +306,12 @@ export class AuthController implements AuthServiceController {
     const { page = 1, limit = 10, filterActive } = request;
     const offset = (page - 1) * limit;
     const filter = filterActive ? { active: true } : {};
-    const rawList = await this.userModel
-      .find(filter)
-      .select({ password: 0, condition: 0, inventory: 0 })
-      .skip(offset)
-      .limit(limit);
+    const rawList =
+      (await this.userModel
+        .find(filter)
+        .select({ password: 0, condition: 0, inventory: 0 })
+        .skip(offset)
+        .limit(limit)) || [];
     const total = await this.userModel.countDocuments(filter);
     return {
       page,

@@ -108,7 +108,7 @@ export class RewardController {
       total: res.total,
       filterActive: res.filterActive,
       filterType: res.filterType,
-      list: res.list.map((r) => ({
+      list: res.list?.map((r) => ({
         rewardId: r.rewardId,
         type: r.type,
         title: r.title,

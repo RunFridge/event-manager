@@ -72,7 +72,7 @@ export class ClientController {
       total: res.total,
       filterEventId: res.filterEventId,
       filterUsername: res.filterUsername,
-      list: res.list.map((a) => ({
+      list: res.list?.map((a) => ({
         auditId: a.auditId,
         userId: a.userId,
         username: a.username,
@@ -117,7 +117,7 @@ export class ClientController {
       total: res.total,
       filterActive: res.filterActive,
       filterType: res.filterType,
-      list: res.list.map((e) => ({
+      list: res.list?.map((e) => ({
         eventId: e.eventId,
         type: e.type,
         title: e.title,

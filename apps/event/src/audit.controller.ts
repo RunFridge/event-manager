@@ -23,10 +23,8 @@ export class AuditController implements AuditServiceController {
     const filter: { username?: string; eventId?: string } = {};
     if (filterUsername) filter.username = filterUsername;
     if (filterEventId) filter.eventId = filterEventId;
-    const rawList = await this.auditModel
-      .find(filter)
-      .skip(offset)
-      .limit(limit);
+    const rawList =
+      (await this.auditModel.find(filter).skip(offset).limit(limit)) || [];
     const total = await this.auditModel.countDocuments(filter);
     return {
       total,

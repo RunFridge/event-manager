@@ -35,7 +35,7 @@ export class AuditController {
       total: res.total,
       filterEventId: res.filterEventId,
       filterUsername: res.filterUsername,
-      list: res.list.map((a) => ({
+      list: res.list?.map((a) => ({
         auditId: a.auditId,
         userId: a.userId,
         username: a.username,

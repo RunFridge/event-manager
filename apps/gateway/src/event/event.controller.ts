@@ -72,7 +72,7 @@ export class EventController {
       total: res.total,
       filterActive: res.filterActive,
       filterType: res.filterType,
-      list: res.list.map((e) => ({
+      list: res.list?.map((e) => ({
         eventId: e.eventId,
         type: e.type,
         title: e.title,

@@ -40,11 +40,12 @@ export class EventController implements EventServiceController {
     const filter: { active?: boolean; type?: string } = {};
     if (filterActive) filter.active = filterActive;
     if (filterType) filter.type = filterType;
-    const rawList = await this.eventModel
-      .find(filter)
-      .select({ rewards: 0 })
-      .skip(offset)
-      .limit(limit);
+    const rawList =
+      (await this.eventModel
+        .find(filter)
+        .select({ rewards: 0 })
+        .skip(offset)
+        .limit(limit)) || [];
     const total = await this.eventModel.countDocuments(filter);
     return {
       total,

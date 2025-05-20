@@ -27,11 +27,12 @@ export class RewardController implements RewardServiceController {
     const filter: { active?: boolean; type?: string } = {};
     if (filterActive) filter.active = filterActive;
     if (filterType) filter.type = filterType;
-    const rawList = await this.rewardModel
-      .find(filter)
-      .select({ rewards: 0 })
-      .skip(offset)
-      .limit(limit);
+    const rawList =
+      (await this.rewardModel
+        .find(filter)
+        .select({ rewards: 0 })
+        .skip(offset)
+        .limit(limit)) || [];
     const total = await this.rewardModel.countDocuments(filter);
     return {
       total,

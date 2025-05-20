@@ -38,7 +38,7 @@ export class UserController {
       limit: res.limit,
       total: res.total,
       filterActive: res.filterActive,
-      list: res.list.map((u) => ({
+      list: res.list?.map((u) => ({
         id: u.userId,
         username: u.username,
         active: u.active,

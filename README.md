@@ -260,3 +260,4 @@ OpenAPI spec을 사용한 [@nestjs/swagger](https://docs.nestjs.com/openapi/intr
   - Roundrobin
 
 - 현재 편의를 위해서 사용자 생성시 "admin"으로 생성되도록 설정하여, 추후 환경 변수에 따른 관리자 계정 seed 로직 추가 필요
+- Type Validation Check
